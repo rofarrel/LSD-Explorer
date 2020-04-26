@@ -23,6 +23,8 @@ library(shinyFiles)
 library(plotly)
 # library(JLutils)
 library(lubridate)
+library(DT)
+library(formattable)
 # library(graph)
 # install_github("larmarange/JLutils", lib = )
 # tidyverse,data.table,plyr,plotly,dplyr,gridExtra,reshape2,scales,splitstackshape,readr,shiny,readxl,shinyBS,Rcrawler,xml2,shinyFiles,lubridate
@@ -121,20 +123,32 @@ ui <- navbarPage(
     tabPanel("Data Management",
              sidebarLayout(
                  sidebarPanel(
-                     h3("Load Saved Data"),
-                     fileInput(
+                     radioButtons(
+                         inputId = "dataselector",
+                         label = "Data-View: Choose Which Data to Work With",
+                         choices = c(
+                             "Imported Previous DataFrame" = "a",
+                             "Downloaded New Data" = "b",
+                             "Merged Old Data and New Data" = "c"
+                         ),
+                         selected = "a"
+                     ),
+                     tags$br(),
+                     h4("Load Saved Data"),
+                         fileInput(
                          inputId = "dataload",
                          label = "Browse for File",
                          multiple = FALSE,
                          buttonLabel = "Browse..",
-                         placeholder = "No files selected"
-                     ),
+                         placeholder = "No files selected"),
                      actionButton(
                          inputId = "loadButton",
                          label = "Import DataFrame",
                          icon = NULL,
                          width = NULL
                      ),
+                     tags$br(),
+                     tags$br(),
                      h4("Gather Data from LSD"),
                      radioButtons(
                          inputId = "cycleSelect",
@@ -185,16 +199,9 @@ ui <- navbarPage(
                      width = 3
                  ),
                  mainPanel(
-                     radioButtons(
-                         inputId = "dataselector",
-                         label = "Data-View: Choose Which Data to Work With",
-                         choices = c(
-                             "Imported Previous DataFrame" = "a",
-                             "Downloaded New Data" = "b",
-                             "Merged Old Data and New Data" = "c"
-                         ),
-                         selected = "a"
-                     ),
+                     uiOutput("tt1"),
+                     DT::dataTableOutput("dtable"),
+                     uiOutput("tt2"),
                      DT::dataTableOutput("rtable")
                  )
              )),
@@ -650,6 +657,19 @@ server <- function(input, output, session) {
         return(schoolurls)
     })
     
+    # rlist3 <- c("Rejected", "Rejected, Deferred", "Rejected, Withdrawn")
+    # 
+    # alist2 <- c("Accepted", "Accepted, Attending", "Accepted, Deferred", "WL, Accepted","WL, Accepted, Withdrawn","WL, Accepted, Attending", "Acceptd, Deferred, Attending", "Accepted, Deferred, Withdrawn", "Accepted, Withrdawn")
+    # 
+    # wlist2 <- c("Waitlisted", "Waitlisted, Deferred", "Waitlisted, Withdrawn", "WL, Rejected", "WL, Rejected, Withdrawn",
+    #             "WL, Withdrawn")
+    
+    # gg_color_hue <- function(n) {
+    #     hues = seq(15, 375, length = n + 1)
+    #     hcl(h = hues, l = 65, c = 100)[1:n]
+    # }
+    # cols2 <- c(gg_color_hue(3)[1:2],"khaki")
+    
     schools <- eventReactive(c(input$tierSelect, input$cycleSelect, input$allSelect), {
         schoolurls <- schools2()
         schoolurls$X1 <- as.character(schoolurls$X1)
@@ -715,6 +735,15 @@ server <- function(input, output, session) {
             write_csv(dfsave[order(dfsave$II, na.last = TRUE), ], con , col_names = TRUE)
         }
     )
+    
+    output$tt1 <- renderUI(
+        if(!is.null(recentD())){
+            h4(strong("Most Recent Decisions in the Data"), align = "center")
+            })
+    output$tt2 <- renderUI(
+        if(!is.null(colortable())){
+            h4(strong("All Data - Default sorted by Decision Date"), align = "center")
+            })
     
     dfScrape <- eventReactive(input$scrapeButton,{
         br <- run_browser()
@@ -923,9 +952,34 @@ server <- function(input, output, session) {
             Cycle = toString(Cycle)
         ))
     })
+    
+    colortable2 <- reactive({
+        gg_color_hue <- function(n) {
+            hues = seq(15, 375, length = n + 1)
+            hcl(h = hues, l = 65, c = 100)[1:n]
+        }
+        cols <- c(gg_color_hue(3)[1:2],"khaki")
+        
+        cr <- gg_color_hue(3)[1]
+        ca <- gg_color_hue(3)[2]
+        cw <- "khaki"
+        
+        cols2 <- c(rep(cr,3),rep(ca,9),rep(cw,6))
+        
+        alist <- c("Accepted", "Accepted, Attending", "Accepted, Deferred", "WL, Accepted","WL, Accepted, Withdrawn","WL, Accepted, Attending", "Acceptd, Deferred, Attending", "Accepted, Deferred, Withdrawn","Accepted, Withdrawn")
+        rlist <- c("Rejected", "Rejected, Deferred", "Rejected, Withdrawn")
+        wlist <- c("Waitlisted", "Waitlisted, Deferred", "Waitlisted, Withdrawn", "WL, Rejected", "WL, Rejected, Withdrawn",
+                   "WL, Withdrawn")
+        
+        return(datatable(dfPlot(),options = list(order=list(14,'desc')),rownames = FALSE)%>% formatStyle(
+            "Result",
+            target = "row",
+            backgroundColor = styleEqual(c(rlist,alist,wlist),cols2))%>% formatStyle(columns = c(1:ncol(query_result())),fontSize = '85%'))
+    })
+    
     output$temptable <-
         DT::renderDataTable(
-            dfPlot(),
+            colortable2(),
             options = list(
                 lengthMenu = c(25, 50, 100),
                 pageLength = 25,
@@ -937,19 +991,45 @@ server <- function(input, output, session) {
             )
         )
     output$listtable <- renderTable(listOutput())
+    
+    colortable <- reactive({
+        gg_color_hue <- function(n) {
+            hues = seq(15, 375, length = n + 1)
+            hcl(h = hues, l = 65, c = 100)[1:n]
+        }
+        # cols <- c(gg_color_hue(3)[1:2],"khaki")
+        
+        cr <- gg_color_hue(3)[1]
+        ca <- gg_color_hue(3)[2]
+        cw <- "khaki"
+        # cw <- gg_color_hue(3)[3]
+
+        cols2 <- c(rep(cr,3),rep(ca,9),rep(cw,6))
+        
+        alist <- c("Accepted", "Accepted, Attending", "Accepted, Deferred", "WL, Accepted","WL, Accepted, Withdrawn","WL, Accepted, Attending", "Acceptd, Deferred, Attending", "Accepted, Deferred, Withdrawn","Accepted, Withdrawn")
+        rlist <- c("Rejected", "Rejected, Deferred", "Rejected, Withdrawn")
+        wlist <- c("Waitlisted", "Waitlisted, Deferred", "Waitlisted, Withdrawn", "WL, Rejected", "WL, Rejected, Withdrawn",
+                   "WL, Withdrawn")
+        
+        return(datatable(query_result(),options = list(order=list(14,'desc')),rownames = FALSE)%>% formatStyle(columns = c(1:ncol(query_result())),
+                                                                                                               fontSize = '85%',background = "beige") %>% formatStyle(
+            "Result",
+            target = "cell",
+            backgroundColor = styleEqual(c(rlist,alist,wlist),cols2)))
+    })
     output$rtable <-
         DT::renderDataTable(
-            query_result(),
+            colortable(),
             options = list(
                 lengthMenu = c(25, 50, 100),
                 pageLength = 25,
                 autoWidth = TRUE,
                 columnDefs = list(list(
                     width = '200px', targets = c(1, 3)
-                )),
-                order = list(1, 'asc')
+                ))
             )
-        )
+        ) 
+    
     output$schSelect <- renderUI({
         s.choices <- listOutput()[, 1]
         selectInput(
@@ -959,6 +1039,54 @@ server <- function(input, output, session) {
             selected = NULL
         )
     })
+    
+    recentD <- reactive({
+        gg_color_hue <- function(n) {
+            hues = seq(15, 375, length = n + 1)
+            hcl(h = hues, l = 65, c = 100)[1:n]
+        }
+        cols <- c(gg_color_hue(3)[1:2],"khaki")
+        
+        cr <- gg_color_hue(3)[1]
+        ca <- gg_color_hue(3)[2]
+        cw <- "khaki"
+        # cw <- gg_color_hue(3)[3]
+        
+        cols2 <- c(rep(cr,3),rep(ca,9),rep(cw,6))
+        
+        alist <- c("Accepted", "Accepted, Attending", "Accepted, Deferred", "WL, Accepted","WL, Accepted, Withdrawn","WL, Accepted, Attending", "Acceptd, Deferred, Attending", "Accepted, Deferred, Withdrawn","Accepted, Withdrawn")
+        rlist <- c("Rejected", "Rejected, Deferred", "Rejected, Withdrawn")
+        wlist <- c("Waitlisted", "Waitlisted, Deferred", "Waitlisted, Withdrawn", "WL, Rejected", "WL, Rejected, Withdrawn",
+                   "WL, Withdrawn")
+        temp <- query_result()
+        temp <- temp[,c("School","Result","Decision")]
+        temp <- temp[!is.na(temp$Decision),]
+        temp <- plyr::count(temp)
+        temp <- data.frame(temp)
+        temp$Decision <- as.Date(temp$Decision, "%Y/%m/%d")
+        temp$Result <- as.factor(temp$Result)
+        temp$freq <- as.numeric(temp$freq)
+        # r.choices1[order(r.choices1$rank, na.last = TRUE),]
+        
+        return(datatable(temp,options = list(order=list(2,'desc')),rownames = FALSE)%>% formatStyle(
+            "Result",
+            target = "row",
+            backgroundColor = styleEqual(c(rlist,alist,wlist),cols2))%>% formatStyle(columns = c(1:ncol(temp)),fontSize = '85%'))
+        
+    })
+    
+    output$dtable <-
+        DT::renderDataTable(
+            recentD(),
+            options = list(
+                lengthMenu = c(25, 50, 100),
+                pageLength = 25,
+                autoWidth = TRUE,
+                columnDefs = list(list(
+                    width = '200px', targets = c(1, 3)
+                ))
+            )
+        ) 
     
     output$sch1 <- renderUI({
         s.choices <- listOutput()[, 1]
@@ -1179,7 +1307,41 @@ server <- function(input, output, session) {
         
         df.temp2$LSAT <- as.factor(df.temp2$LSAT)
         df.temp2$Result <- as.factor(df.temp2$Result)
-        p1 <- ggplot(df.temp2, aes(
+        gg_color_hue <- function(n) {
+            hues = seq(15, 375, length = n + 1)
+            hcl(h = hues, l = 65, c = 100)[1:n]
+        }
+        cols <- c(gg_color_hue(3)[1:2],"khaki")
+        
+        cr <- gg_color_hue(3)[1]
+        ca <- gg_color_hue(3)[2]
+        cw <- "khaki"
+        # cw <- gg_color_hue(3)[3]
+        
+        cols2 <- c(cr,ca,cw)
+        if (input$resultbin == "Yes"){
+            p1 <- ggplot(df.temp2, aes(
+                x = LSAT,
+                fill = Result
+            )) +
+                geom_bar(colour = "black") +
+                facet_grid(. ~ School, scales = "free_y") +
+                scale_x_discrete(drop = FALSE)+
+                stat_stack_labels(color = "black")+
+                scale_fill_manual(values = c("Accepted" = ca, "Rejected" = cr, "Waitlisted" = cw))
+            
+            p2 <- ggplot(df.temp2, aes(
+                x = LSAT,
+                fill = Result
+            )) +
+                geom_bar(position = "fill") +
+                facet_grid(. ~ School) +
+                scale_x_discrete(drop = FALSE)+
+                stat_fill_labels()+
+                scale_fill_manual(values = c("Accepted" = ca, "Rejected" = cr, "Waitlisted" = cw))
+            
+        }else{
+            p1 <- ggplot(df.temp2, aes(
             x = LSAT,
             fill = Result,
             color = Result
@@ -1197,7 +1359,7 @@ server <- function(input, output, session) {
             facet_grid(. ~ School) +
             scale_x_discrete(drop = FALSE)+
             stat_fill_labels()
-            
+        }
         
         if (input$bar_type == "Stack"){
             
@@ -1219,6 +1381,20 @@ server <- function(input, output, session) {
         df1 <- df1[df1$Decision >= as.Date("2017-1-1"),]
         df1 <- df1[is.na(df1$User) == FALSE,]
         df1$Result <- as.factor(df1$Result)
+        
+        gg_color_hue <- function(n) {
+            hues = seq(15, 375, length = n + 1)
+            hcl(h = hues, l = 65, c = 100)[1:n]
+        }
+        cols <- c(gg_color_hue(3)[1:2],"khaki")
+        
+        cr <- gg_color_hue(3)[1]
+        ca <- gg_color_hue(3)[2]
+        cw <- "khaki"
+        # cw <- gg_color_hue(3)[3]
+        
+        cols2 <- c(cr,ca,cw)
+        if (input$resultbin == "Yes"){
         p1 <- ggplot(data = df1, aes(
             x = Decision,
             y = Result,
@@ -1234,8 +1410,26 @@ server <- function(input, output, session) {
                 ),
                 date_breaks = "1 week",
                 date_labels = "%m-%d"
-            )
-        
+            )+
+            scale_fill_manual(values = c("Accepted" = ca, "Rejected" = cr, "Waitlisted" = cw))
+        }else{
+            p1 <- ggplot(data = df1, aes(
+                x = Decision,
+                y = Result,
+                label = as.Date(Decision)
+            )) +
+                geom_count(aes(fill = Result),color = "black", alpha = 0.7) +
+                facet_grid(School ~ .) +
+                scale_x_date(
+                    "Time",
+                    limits = c(
+                        as.Date(min(df1$Decision)),
+                        as.Date(max(df1$Decision))
+                    ),
+                    date_breaks = "1 week",
+                    date_labels = "%m-%d"
+                )
+        }
         return(ggplotly(p1, tooltip = c("n", "label")))
         # ggtitle("February 2020 T13 Waves")
     })
@@ -1345,19 +1539,35 @@ server <- function(input, output, session) {
             rankrange <- seq(input$rank_in2[1],input$rank_in2[2],1)
             dffr <- subset(dffr, dffr$Rank %in% rankrange)
         }
+        
+
+        
+        
+        
         dffr <- DT::datatable(dffr, rownames = TRUE, options = list(lengthMenu = c(50,100), pageLength = 50,
-                                                                    order = list(1, 'asc')))
+                                                                    order = list(1, 'asc'))) %>% formatStyle("Pr. Accepted (%)",
+                                                                                                        background = styleColorBar(range(c(0,100)), 'limegreen'),
+                                                                                                        backgroundSize = '98% 88%',
+                                                                                                        backgroundRepeat = 'no-repeat',
+                                                                                                        backgroundPosition = 'center')%>% formatStyle("Pr. WL (%)",
+                                                                                                                                                      background = styleColorBar(range(c(0,100)), 'khaki'),
+                                                                                                                                                      backgroundSize = '98% 88%',
+                                                                                                                                                      backgroundRepeat = 'no-repeat',
+                                                                                                                                                      backgroundPosition = 'center')
         dffr
-        # ,
-        # autoWidth = TRUE,
-        # columnDefs = list(list(width = '200px', targets = c(1, 3)))
-    })
+    
+        # return(datatable(dfPlot(),options = list(order=list(14,'desc')),rownames = FALSE)%>% formatStyle(
+        #     "Result",
+        #     target = "row",
+        #     backgroundColor = styleEqual(c(rlist,alist,wlist),cols2))%>% formatStyle(columns = c(1:ncol(query_result())),fontSize = '85%'))
+        # 
+        })
+    
     
     output$rtable2 <- DT::renderDataTable(query_result2(),options = list(lengthMenu = c(50,100), pageLength = 50,
                                                                          autoWidth = TRUE,
                                                                          columnDefs = list(list(width = '200px', targets = c(1, 3))),
-                                                                         order = list(1, 'asc')))
-    
+                                                                         order = list(1, 'asc'))) 
     
     dfMerge <- eventReactive(input$mergeButton, {
         df.temp1 <- dfScrape()

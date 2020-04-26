@@ -1,4 +1,4 @@
-1c8dc9f59522c2fd1018ad7286a34222 *DESCRIPTION
+31bbf068f0370f404ae460a64bf2f800 *DESCRIPTION
 bb8c9f66821aa216bb902c80dc224807 *INDEX
 03017cf1b7b470a017b446ae9bbd27e7 *LICENSE
 f6bd9b26037898d311eef967f030cc84 *Meta/Rd.rds
@@ -6,7 +6,7 @@ f6bd9b26037898d311eef967f030cc84 *Meta/Rd.rds
 8b45d45dabcdc8ad98d45713ed0661a7 *Meta/hsearch.rds
 b79cacfe3ded76c6058132547629754c *Meta/links.rds
 e8d13e2fa7789a5f4e8ea2309a780b6d *Meta/nsInfo.rds
-88381d3d3cf7e7abbc7280e07b7d0660 *Meta/package.rds
+e28c0609383d1d8779660f4c8f7783fe *Meta/package.rds
 712645c0db3c1486d2dcc5bdd316fd53 *NAMESPACE
 3a9f555f49edaa14575b05beb788ef9d *NEWS.md
 ebf0fc819595d631b8bf280c4b049940 *R/shiny
@@ -49,9 +49,9 @@ f1b063aae380d9463f3739dd60c3e666 *examples/11_timer/Readme.md
 2d20df93b6d6400ea0c53b4722dbc811 *examples/11_timer/app.R
 45287e37fd816baaf4e205603187e508 *help/AnIndex
 16ace4a7af7e6cbf41853bd376632b45 *help/aliases.rds
-bad64b820af096dc2a039771b8cac3eb *help/paths.rds
-7e651a2ffbd7aaac1f9acd040a52ef65 *help/shiny.rdb
-97acaee2adc04bdba242bb99b515ea2d *help/shiny.rdx
+2cf6f863f41089988d855d24588db132 *help/paths.rds
+606fbb7d01368999248fc1c53e0b9742 *help/shiny.rdb
+693f6447c68b635b9fb33145fc516918 *help/shiny.rdx
 c8ed5c6d0909894e2d95fd375931e512 *html/00Index.html
 b6763e6916890c631fdc3f2643803b1a *html/R.css
 cd58550659401cbeb23bc3dad25399b4 *template/default.html
