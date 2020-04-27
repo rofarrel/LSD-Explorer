@@ -2,7 +2,7 @@
 
 Check the releases for updates and changes here https://github.com/rofarrel/LSD-Explorer/releases
 
-### **How to Use:**
+### **How to Use**
 
 Click the button to Download/Clone the repository and download the .zip folder.
 
