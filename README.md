@@ -1,8 +1,8 @@
-# LSD-Explorer-v1.2
+## LSD-Explorer-v1.2
 
 Check the releases for updates and changes here https://github.com/rofarrel/LSD-Explorer/releases
 
-## **How to Use:**
+### **How to Use:**
 
 Click the button to Download/Clone the repository and download the .zip folder.
 
@@ -10,7 +10,7 @@ Extract the contents of the .zip folder after finished downloading.
 
 Run the "LSD-Explorer by Riley O'Farrell" application in the LSD-Explorer-RO folder.
 
-## **Notes**
+### **Notes**
 
 * If the app loads only a white screen, press "View" then "Reload" and that should load the app.
 
