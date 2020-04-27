@@ -1,4 +1,4 @@
-# LSD-Explorer-v4
+# LSD-Explorer-v1.2
 
 Check the releases for updates and changes here https://github.com/rofarrel/LSD-Explorer/releases
 
