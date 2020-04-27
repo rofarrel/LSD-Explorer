@@ -2,7 +2,7 @@
 
 Check the releases for updates and changes here https://github.com/rofarrel/LSD-Explorer/releases
 
-**How to Use:**
+##**How to Use:**
 
 Click the button to Download/Clone the repository and download the .zip folder.
 
@@ -10,13 +10,13 @@ Extract the contents of the .zip folder after finished downloading.
 
 Run the "LSD-Explorer by Riley O'Farrell" application in the LSD-Explorer-RO folder.
 
-**NOTES**
+##**Notes**
 
-If the app loads only a white screen, press "View" then "Reload" and that should load the app.
+* If the app loads only a white screen, press "View" then "Reload" and that should load the app.
 
-This __only__ runs on Windows. I have not created a MacOS compatible version yet. If you are on a mac, you have 2 options. The easiest option is to run the R code yourself in RStudio. The code is found in the Resource->app folder and is the "app.r" file. The other way for you to run the program is to use a virtual machine on your mac and run windows on the virtual machine.
+* This __only__ runs on Windows. I have not created a MacOS compatible version yet. If you are on a mac, you have 2 options. The easiest option is to run the R code yourself in RStudio. The code is found in the Resource->app folder and is the "app.r" file. The other way for you to run the program is to use a virtual machine on your mac and run windows on the virtual machine.
 
-**How the program works**
+###**How the program works**
 
 * On the first use, you will need to "Gather" data from LSD. Select the cycle that you want (probably 19-20) and select the group of schools. Right now only the t50 schools are supported. You can select either T14 or T20 or a custom selection of schools. I do not recommend selecting a large amount of schools, as this increases the time it takes to gather the data. The T14 can take 5-6 minutes.
 
