@@ -1,11 +1,9 @@
-# setwd("C:/Users/riley/Documents/lsd downloads/scraperapp")
-
 library(tidyverse)
 library(data.table)
 library(plyr)
 library(dplyr)
-library(gridExtra)
-library(reshape2)
+# library(gridExtra)
+# library(reshape2)
 library(scales)
 library(splitstackshape) #needed for "cslplit" function
 library(stringr)
@@ -13,9 +11,9 @@ library(readr)
 library(ggplot2)
 library(shiny)
 library(readxl)
-library(shinyEventLogger)
+# library(shinyEventLogger)
 library(shinyBS)
-library(photon)
+# library(photon)
 library(Rcrawler)
 library(xml2)
 library(devtools)
@@ -25,14 +23,17 @@ library(plotly)
 library(lubridate)
 library(DT)
 library(formattable)
+library(visreg)
+library(cowplot)
+# if (is.null(suppressMessages(webshot:::find_phantom()))) { webshot::install_phantomjs() }
 # library(graph)
 # install_github("larmarange/JLutils", lib = )
-# tidyverse,data.table,plyr,plotly,dplyr,gridExtra,reshape2,scales,splitstackshape,readr,shiny,readxl,shinyBS,Rcrawler,xml2,shinyFiles,lubridate
+# tidyverse,data.table,plyr,plotly,dplyr,gridExtra,reshape2,scales,splitstackshape,readr,shiny,readxl,shinyBS,Rcrawler,xml2,shinyFiles,lubridate,formattable,DT,visreg,cowplot
 
 # Define UI for application that draws a histogram
 
 
-inv_cumsum <<- function(x){
+inv_cumsum <<- function(x) {
     sum(x) - cumsum(x) + x
 }
 
@@ -57,25 +58,41 @@ StatFillLabels <<- ggproto(
         }, stats, groups, SIMPLIFY = FALSE)
         data <- do.call(plyr::rbind.fill, stats)
         plyr::ddply(
-            data, "x", plyr::mutate,
+            data,
+            "x",
+            plyr::mutate,
             prop = count / sum(count),
             cumprop = inv_cumsum(count) / sum(count),
             ylabel = (inv_cumsum(count) - count / 2) / sum(count),
             na.rm = TRUE
         )
     },
-    default_aes = aes(y = ..ylabel.., label = paste(round(100 * ..prop.., digits = 1), "%",sep = ""))
+    default_aes = aes(y = ..ylabel.., label = paste(round(
+        100 * ..prop.., digits = 1
+    ), "%", sep = ""))
 )
 
-stat_fill_labels <<- function(mapping = NULL, data = NULL, geom = "text",
-                             position = "identity", width = NULL, na.rm = FALSE, show.legend = NA,
-                             inherit.aes = TRUE, ...){
-    layer(
-        stat = StatFillLabels, data = data, mapping = mapping, geom = geom,
-        position = position, show.legend = show.legend, inherit.aes = inherit.aes,
-        params = list(na.rm = na.rm, ...)
-    )
-}
+stat_fill_labels <<-
+    function(mapping = NULL,
+             data = NULL,
+             geom = "text",
+             position = "identity",
+             width = NULL,
+             na.rm = FALSE,
+             show.legend = NA,
+             inherit.aes = TRUE,
+             ...) {
+        layer(
+            stat = StatFillLabels,
+            data = data,
+            mapping = mapping,
+            geom = geom,
+            position = position,
+            show.legend = show.legend,
+            inherit.aes = inherit.aes,
+            params = list(na.rm = na.rm, ...)
+        )
+    }
 
 StatStackLabels <<- ggproto(
     "StatStackLabels",
@@ -98,7 +115,9 @@ StatStackLabels <<- ggproto(
         }, stats, groups, SIMPLIFY = FALSE)
         data <- do.call(plyr::rbind.fill, stats)
         plyr::ddply(
-            data, "x", plyr::mutate,
+            data,
+            "x",
+            plyr::mutate,
             cumcount = inv_cumsum(count),
             ylabel = inv_cumsum(count) - count / 2,
             na.rm = TRUE
@@ -107,15 +126,27 @@ StatStackLabels <<- ggproto(
     default_aes = aes(y = ..ylabel.., label = ..count..)
 )
 
-stat_stack_labels <<- function(mapping = NULL, data = NULL, geom = "text",
-                              position = "identity", width = NULL, na.rm = FALSE, show.legend = NA,
-                              inherit.aes = TRUE, ...){
-    layer(
-        stat = StatStackLabels, data = data, mapping = mapping, geom = geom,
-        position = position, show.legend = show.legend, inherit.aes = inherit.aes,
-        params = list(na.rm = na.rm, ...)
-    )
-}
+stat_stack_labels <<-
+    function(mapping = NULL,
+             data = NULL,
+             geom = "text",
+             position = "identity",
+             width = NULL,
+             na.rm = FALSE,
+             show.legend = NA,
+             inherit.aes = TRUE,
+             ...) {
+        layer(
+            stat = StatStackLabels,
+            data = data,
+            mapping = mapping,
+            geom = geom,
+            position = position,
+            show.legend = show.legend,
+            inherit.aes = inherit.aes,
+            params = list(na.rm = na.rm, ...)
+        )
+    }
 
 
 ui <- navbarPage(
@@ -135,12 +166,13 @@ ui <- navbarPage(
                      ),
                      tags$br(),
                      h4("Load Saved Data"),
-                         fileInput(
+                     fileInput(
                          inputId = "dataload",
                          label = "Browse for File",
                          multiple = FALSE,
                          buttonLabel = "Browse..",
-                         placeholder = "No files selected"),
+                         placeholder = "No files selected"
+                     ),
                      actionButton(
                          inputId = "loadButton",
                          label = "Import DataFrame",
@@ -174,7 +206,7 @@ ui <- navbarPage(
                          selected = "T14",
                          multiple = FALSE
                      ),
-                        uiOutput("sch_in"),
+                     uiOutput("sch_in"),
                      actionButton(
                          inputId = "scrapeButton",
                          label = "Gather From LSD...",
@@ -279,7 +311,9 @@ ui <- navbarPage(
                  sidebarPanel(
                      uiOutput("sch1"),
                      uiOutput("sch2"),
-                     h5("The Legends are interactive. Click a money amount to remove it or double-click to isolate it."),
+                     h5(
+                         "The Legends are interactive. Click a money amount to remove it or double-click to isolate it."
+                     ),
                      numericInput(
                          inputId = "money_val1",
                          label = "Scholarship Minimum Amount",
@@ -301,10 +335,8 @@ ui <- navbarPage(
                      ),
                      width = 3
                  ),
-                 mainPanel(
-                     plotlyOutput("schol1"),
-                     plotlyOutput("schol2"),
-                 )
+                 mainPanel(plotlyOutput("schol1"),
+                           plotlyOutput("schol2"),)
              )),
     tabPanel("Predictor",
              sidebarLayout(
@@ -336,24 +368,6 @@ ui <- navbarPage(
                          selected = 0,
                          inline = TRUE,
                          width = NULL
-                     ),
-                     
-                     radioButtons(
-                         inputId = "rank_yn",
-                         label = "Use Rank Filter?",
-                         choices = c("No" = 0, "Yes" = 1),
-                         selected = 0,
-                         inline = TRUE,
-                         width = NULL
-                     ),
-                     
-                     sliderInput(
-                         inputId = "rank_in",
-                         label = "Rank Range",
-                         min = 1,
-                         max = 143,
-                         value = c(1, 25),
-                         step = 1
                      ),
                      radioButtons(
                          inputId = "sent_yn2",
@@ -392,7 +406,13 @@ ui <- navbarPage(
                  ),
                  
                  # Show a plot of the generated distribution
-                 mainPanel(DT::dataTableOutput("rtable2"))
+                 mainPanel(
+                     uiOutput("preds"),
+                     plotlyOutput("predplot1"),
+                     plotlyOutput("predplot2"),
+                     DT::dataTableOutput("rtable2")
+
+                 )
              ))
 )
 
@@ -658,9 +678,9 @@ server <- function(input, output, session) {
     })
     
     # rlist3 <- c("Rejected", "Rejected, Deferred", "Rejected, Withdrawn")
-    # 
+    #
     # alist2 <- c("Accepted", "Accepted, Attending", "Accepted, Deferred", "WL, Accepted","WL, Accepted, Withdrawn","WL, Accepted, Attending", "Acceptd, Deferred, Attending", "Accepted, Deferred, Withdrawn", "Accepted, Withrdawn")
-    # 
+    #
     # wlist2 <- c("Waitlisted", "Waitlisted, Deferred", "Waitlisted, Withdrawn", "WL, Rejected", "WL, Rejected, Withdrawn",
     #             "WL, Withdrawn")
     
@@ -670,26 +690,29 @@ server <- function(input, output, session) {
     # }
     # cols2 <- c(gg_color_hue(3)[1:2],"khaki")
     
-    schools <- eventReactive(c(input$tierSelect, input$cycleSelect, input$allSelect), {
-        schoolurls <- schools2()
-        schoolurls$X1 <- as.character(schoolurls$X1)
-        schoolurls$X2 <- as.character(schoolurls$X2)
-        if (input$tierSelect == 225){
-          namecheck <- input$allSelect
-          schoolurls <- schoolurls[schoolurls$X2 %in% namecheck, ]
-        }else{
-            rankcheck <- 1:input$tierSelect
-            schoolurls <- schoolurls[schoolurls$rank %in% rankcheck, ]
-        }
-        schoolurls$X1 <- as.character(schoolurls$X1)
-        schoolurls$X2 <- as.character(schoolurls$X2)
-        rm(rankcheck)
-        rm(namecheck)
-        return(schoolurls)
-    })
+    schools <-
+        eventReactive(c(input$tierSelect, input$cycleSelect, input$allSelect),
+                      {
+                          schoolurls <- schools2()
+                          schoolurls$X1 <- as.character(schoolurls$X1)
+                          schoolurls$X2 <- as.character(schoolurls$X2)
+                          if (input$tierSelect == 225) {
+                              namecheck <- input$allSelect
+                              schoolurls <- schoolurls[schoolurls$X2 %in% namecheck,]
+                          } else{
+                              rankcheck <- 1:input$tierSelect
+                              schoolurls <-
+                                  schoolurls[schoolurls$rank %in% rankcheck,]
+                          }
+                          schoolurls$X1 <- as.character(schoolurls$X1)
+                          schoolurls$X2 <- as.character(schoolurls$X2)
+                          rm(rankcheck)
+                          rm(namecheck)
+                          return(schoolurls)
+                      })
     #####
     global <- reactiveValues(datapath = getwd())
-
+    
     dir <- reactive(input$dir)
     
     '%!in%' <- function(x, y) {
@@ -732,20 +755,19 @@ server <- function(input, output, session) {
         },
         content = function(con) {
             dfsave <- query_result()
-            write_csv(dfsave[order(dfsave$II, na.last = TRUE), ], con , col_names = TRUE)
+            write_csv(dfsave[order(dfsave$II, na.last = TRUE),], con , col_names = TRUE)
         }
     )
     
-    output$tt1 <- renderUI(
-        if(!is.null(recentD())){
-            h4(strong("Most Recent Decisions in the Data"), align = "center")
-            })
-    output$tt2 <- renderUI(
-        if(!is.null(colortable())){
-            h4(strong("All Data - Default sorted by Decision Date"), align = "center")
-            })
+    output$tt1 <- renderUI(if (!is.null(recentD())) {
+        h4(strong("Most Recent Decisions in the Data"), align = "center")
+    })
+    output$tt2 <- renderUI(if (!is.null(colortable())) {
+        h4(strong("All Data - Default sorted by Decision Date"),
+           align = "center")
+    })
     
-    dfScrape <- eventReactive(input$scrapeButton,{
+    dfScrape <- eventReactive(input$scrapeButton, {
         br <- run_browser()
         mylist <- list()
         schoolurls <- schools()
@@ -759,7 +781,7 @@ server <- function(input, output, session) {
                              url <- schoolurls$X1[i]
                              
                              page1 <-
-                                 LinkExtractor(url = url, Browser = br, )
+                                 LinkExtractor(url = url, Browser = br,)
                              page1 <-
                                  page1[["Info"]][["Source_page"]]
                              page1 <- gsub('"', " ", page1)
@@ -769,7 +791,7 @@ server <- function(input, output, session) {
                              page1 <- cbind(page1)
                              
                              xy <- data.frame(page1)
-                             xy <- xy[!grepl("DOCTYPE", xy$page1),]
+                             xy <- xy[!grepl("DOCTYPE", xy$page1), ]
                              xy <- data.frame(xy)
                              xy$xy <- as.character(xy$xy)
                              xy <- str_split(xy$xy, "',")
@@ -781,13 +803,13 @@ server <- function(input, output, session) {
                              xy$xy <- gsub("'", "", xy$xy)
                              xy$xy <- trimws(xy$xy)
                              test <- c("[", "]", "<td>")
-                             xy <- xy[xy$xy %!in% test,]
+                             xy <- xy[xy$xy %!in% test, ]
                              xy <- data.frame(xy)
                              xy$xy <- as.character(xy$xy)
                              df3 <- grep("order", xy$xy)
                              cut <- as.numeric(df3[1])
                              cut <- cut - 1
-                             df.c <- xy[1:cut,]
+                             df.c <- xy[1:cut, ]
                              df3 <- grep("</a>", df.c)
                              riley2 <-
                                  cbind(
@@ -956,25 +978,57 @@ server <- function(input, output, session) {
     colortable2 <- reactive({
         gg_color_hue <- function(n) {
             hues = seq(15, 375, length = n + 1)
-            hcl(h = hues, l = 65, c = 100)[1:n]
+            hcl(h = hues,
+                l = 65,
+                c = 100)[1:n]
         }
-        cols <- c(gg_color_hue(3)[1:2],"khaki")
+        cols <- c(gg_color_hue(3)[1:2], "khaki")
         
         cr <- gg_color_hue(3)[1]
         ca <- gg_color_hue(3)[2]
         cw <- "khaki"
         
-        cols2 <- c(rep(cr,3),rep(ca,9),rep(cw,6))
+        cols2 <- c(rep(cr, 3), rep(ca, 9), rep(cw, 6))
         
-        alist <- c("Accepted", "Accepted, Attending", "Accepted, Deferred", "WL, Accepted","WL, Accepted, Withdrawn","WL, Accepted, Attending", "Acceptd, Deferred, Attending", "Accepted, Deferred, Withdrawn","Accepted, Withdrawn")
-        rlist <- c("Rejected", "Rejected, Deferred", "Rejected, Withdrawn")
-        wlist <- c("Waitlisted", "Waitlisted, Deferred", "Waitlisted, Withdrawn", "WL, Rejected", "WL, Rejected, Withdrawn",
-                   "WL, Withdrawn")
+        alist <-
+            c(
+                "Accepted",
+                "Accepted, Attending",
+                "Accepted, Deferred",
+                "WL, Accepted",
+                "WL, Accepted, Withdrawn",
+                "WL, Accepted, Attending",
+                "Acceptd, Deferred, Attending",
+                "Accepted, Deferred, Withdrawn",
+                "Accepted, Withdrawn"
+            )
+        rlist <-
+            c("Rejected",
+              "Rejected, Deferred",
+              "Rejected, Withdrawn")
+        wlist <-
+            c(
+                "Waitlisted",
+                "Waitlisted, Deferred",
+                "Waitlisted, Withdrawn",
+                "WL, Rejected",
+                "WL, Rejected, Withdrawn",
+                "WL, Withdrawn"
+            )
         
-        return(datatable(dfPlot(),options = list(order=list(14,'desc')),rownames = FALSE)%>% formatStyle(
-            "Result",
-            target = "row",
-            backgroundColor = styleEqual(c(rlist,alist,wlist),cols2))%>% formatStyle(columns = c(1:ncol(query_result())),fontSize = '85%'))
+        return(
+            datatable(
+                dfPlot(),
+                options = list(order = list(14, 'desc')),
+                rownames = FALSE
+            ) %>% formatStyle(
+                "Result",
+                target = "row",
+                backgroundColor = styleEqual(c(rlist, alist, wlist), cols2)
+            ) %>% formatStyle(columns = c(1:ncol(
+                query_result()
+            )), fontSize = '85%')
+        )
     })
     
     output$temptable <-
@@ -995,7 +1049,9 @@ server <- function(input, output, session) {
     colortable <- reactive({
         gg_color_hue <- function(n) {
             hues = seq(15, 375, length = n + 1)
-            hcl(h = hues, l = 65, c = 100)[1:n]
+            hcl(h = hues,
+                l = 65,
+                c = 100)[1:n]
         }
         # cols <- c(gg_color_hue(3)[1:2],"khaki")
         
@@ -1003,19 +1059,50 @@ server <- function(input, output, session) {
         ca <- gg_color_hue(3)[2]
         cw <- "khaki"
         # cw <- gg_color_hue(3)[3]
-
-        cols2 <- c(rep(cr,3),rep(ca,9),rep(cw,6))
         
-        alist <- c("Accepted", "Accepted, Attending", "Accepted, Deferred", "WL, Accepted","WL, Accepted, Withdrawn","WL, Accepted, Attending", "Acceptd, Deferred, Attending", "Accepted, Deferred, Withdrawn","Accepted, Withdrawn")
-        rlist <- c("Rejected", "Rejected, Deferred", "Rejected, Withdrawn")
-        wlist <- c("Waitlisted", "Waitlisted, Deferred", "Waitlisted, Withdrawn", "WL, Rejected", "WL, Rejected, Withdrawn",
-                   "WL, Withdrawn")
+        cols2 <- c(rep(cr, 3), rep(ca, 9), rep(cw, 6))
         
-        return(datatable(query_result(),options = list(order=list(14,'desc')),rownames = FALSE)%>% formatStyle(columns = c(1:ncol(query_result())),
-                                                                                                               fontSize = '85%',background = "beige") %>% formatStyle(
-            "Result",
-            target = "cell",
-            backgroundColor = styleEqual(c(rlist,alist,wlist),cols2)))
+        alist <-
+            c(
+                "Accepted",
+                "Accepted, Attending",
+                "Accepted, Deferred",
+                "WL, Accepted",
+                "WL, Accepted, Withdrawn",
+                "WL, Accepted, Attending",
+                "Acceptd, Deferred, Attending",
+                "Accepted, Deferred, Withdrawn",
+                "Accepted, Withdrawn"
+            )
+        rlist <-
+            c("Rejected",
+              "Rejected, Deferred",
+              "Rejected, Withdrawn")
+        wlist <-
+            c(
+                "Waitlisted",
+                "Waitlisted, Deferred",
+                "Waitlisted, Withdrawn",
+                "WL, Rejected",
+                "WL, Rejected, Withdrawn",
+                "WL, Withdrawn"
+            )
+        
+        return(
+            datatable(
+                query_result(),
+                options = list(order = list(14, 'desc')),
+                rownames = FALSE
+            ) %>% formatStyle(
+                columns = c(1:ncol(query_result())),
+                fontSize = '85%',
+                background = "beige"
+            ) %>% formatStyle(
+                "Result",
+                target = "cell",
+                backgroundColor = styleEqual(c(rlist, alist, wlist), cols2)
+            )
+        )
     })
     output$rtable <-
         DT::renderDataTable(
@@ -1028,7 +1115,7 @@ server <- function(input, output, session) {
                     width = '200px', targets = c(1, 3)
                 ))
             )
-        ) 
+        )
     
     output$schSelect <- renderUI({
         s.choices <- listOutput()[, 1]
@@ -1043,24 +1130,47 @@ server <- function(input, output, session) {
     recentD <- reactive({
         gg_color_hue <- function(n) {
             hues = seq(15, 375, length = n + 1)
-            hcl(h = hues, l = 65, c = 100)[1:n]
+            hcl(h = hues,
+                l = 65,
+                c = 100)[1:n]
         }
-        cols <- c(gg_color_hue(3)[1:2],"khaki")
+        cols <- c(gg_color_hue(3)[1:2], "khaki")
         
         cr <- gg_color_hue(3)[1]
         ca <- gg_color_hue(3)[2]
         cw <- "khaki"
         # cw <- gg_color_hue(3)[3]
         
-        cols2 <- c(rep(cr,3),rep(ca,9),rep(cw,6))
+        cols2 <- c(rep(cr, 3), rep(ca, 9), rep(cw, 6))
         
-        alist <- c("Accepted", "Accepted, Attending", "Accepted, Deferred", "WL, Accepted","WL, Accepted, Withdrawn","WL, Accepted, Attending", "Acceptd, Deferred, Attending", "Accepted, Deferred, Withdrawn","Accepted, Withdrawn")
-        rlist <- c("Rejected", "Rejected, Deferred", "Rejected, Withdrawn")
-        wlist <- c("Waitlisted", "Waitlisted, Deferred", "Waitlisted, Withdrawn", "WL, Rejected", "WL, Rejected, Withdrawn",
-                   "WL, Withdrawn")
+        alist <-
+            c(
+                "Accepted",
+                "Accepted, Attending",
+                "Accepted, Deferred",
+                "WL, Accepted",
+                "WL, Accepted, Withdrawn",
+                "WL, Accepted, Attending",
+                "Acceptd, Deferred, Attending",
+                "Accepted, Deferred, Withdrawn",
+                "Accepted, Withdrawn"
+            )
+        rlist <-
+            c("Rejected",
+              "Rejected, Deferred",
+              "Rejected, Withdrawn")
+        wlist <-
+            c(
+                "Waitlisted",
+                "Waitlisted, Deferred",
+                "Waitlisted, Withdrawn",
+                "WL, Rejected",
+                "WL, Rejected, Withdrawn",
+                "WL, Withdrawn"
+            )
         temp <- query_result()
-        temp <- temp[,c("School","Result","Decision")]
-        temp <- temp[!is.na(temp$Decision),]
+        temp <- temp[, c("School", "Result", "Decision")]
+        temp <- temp[!is.na(temp$Decision), ]
         temp <- plyr::count(temp)
         temp <- data.frame(temp)
         temp$Decision <- as.Date(temp$Decision, "%Y/%m/%d")
@@ -1068,10 +1178,17 @@ server <- function(input, output, session) {
         temp$freq <- as.numeric(temp$freq)
         # r.choices1[order(r.choices1$rank, na.last = TRUE),]
         
-        return(datatable(temp,options = list(order=list(2,'desc')),rownames = FALSE)%>% formatStyle(
-            "Result",
-            target = "row",
-            backgroundColor = styleEqual(c(rlist,alist,wlist),cols2))%>% formatStyle(columns = c(1:ncol(temp)),fontSize = '85%'))
+        return(
+            datatable(
+                temp,
+                options = list(order = list(2, 'desc')),
+                rownames = FALSE
+            ) %>% formatStyle(
+                "Result",
+                target = "row",
+                backgroundColor = styleEqual(c(rlist, alist, wlist), cols2)
+            ) %>% formatStyle(columns = c(1:ncol(temp)), fontSize = '85%')
+        )
         
     })
     
@@ -1086,7 +1203,7 @@ server <- function(input, output, session) {
                     width = '200px', targets = c(1, 3)
                 ))
             )
-        ) 
+        )
     
     output$sch1 <- renderUI({
         s.choices <- listOutput()[, 1]
@@ -1131,6 +1248,18 @@ server <- function(input, output, session) {
             )
         }
     })
+    output$preds <- renderUI({
+        if (!is.null(query_result())) {
+            temp <- listOutput()[, 1]
+            selectInput(
+                inputId = "predschool",
+                label = "Choose a School",
+                choices = temp,
+                selected = temp[1],
+                multiple = FALSE
+            )
+        }
+    })
     output$side2 <- renderUI({
         if (!is.null(query_result()) && input$resultbin == "No") {
             r.choices1 <-
@@ -1155,8 +1284,9 @@ server <- function(input, output, session) {
         if (input$tierSelect == 225) {
             r.choices1 <- schools2()
             r.choices1$rank <- as.numeric(r.choices1$rank)
-            r.choices1 <- r.choices1[order(r.choices1$rank, na.last = TRUE),]
-            r.choices1 <- r.choices1[,2]
+            r.choices1 <-
+                r.choices1[order(r.choices1$rank, na.last = TRUE), ]
+            r.choices1 <- r.choices1[, 2]
             
             selectInput(
                 inputId = "allSelect",
@@ -1167,7 +1297,7 @@ server <- function(input, output, session) {
             )
         }
     })
-
+    
     
     
     rbin <- reactive({
@@ -1179,29 +1309,51 @@ server <- function(input, output, session) {
         if (input$complete_yn == "Yes") {
             df.temp <-
                 df.temp[df.temp$Complete >= input$complete_d[1] &
-                            df.temp$Complete <= input$complete_d[2],]
-            df.temp <- df.temp[is.na(df.temp$User) == FALSE,]
+                            df.temp$Complete <= input$complete_d[2], ]
+            df.temp <- df.temp[is.na(df.temp$User) == FALSE, ]
         }
-        df.temp <- df.temp[df.temp$School %in% input$school_in,]
-        df.temp <- df.temp[is.na(df.temp$User) == FALSE,]
-        df.temp <- df.temp[is.na(df.temp$LSAT) == FALSE,]
-        df.temp <- df.temp[df.temp$Cycle %in% input$cycleid,]
-        df.temp <- df.temp[is.na(df.temp$User) == FALSE,]
-        df.temp <- df.temp[is.na(df.temp$LSAT) == FALSE,]
+        df.temp <- df.temp[df.temp$School %in% input$school_in, ]
+        df.temp <- df.temp[is.na(df.temp$User) == FALSE, ]
+        df.temp <- df.temp[is.na(df.temp$LSAT) == FALSE, ]
+        df.temp <- df.temp[df.temp$Cycle %in% input$cycleid, ]
+        df.temp <- df.temp[is.na(df.temp$User) == FALSE, ]
+        df.temp <- df.temp[is.na(df.temp$LSAT) == FALSE, ]
         
-        alist <- c("Accepted", "Accepted, Attending", "Accepted, Deferred", "Accepted, Deferred, Attending", "Accepted, Deferred, Withdrawn", "Accepted, Withdrawn")
-        rlist <- c("Rejected", "Rejected, Deferred", "Rejected, Withdrawn")
-        wlist <- c("Waitlisted", "Waitlisted, Deferred", "Waitlisted, Withdrawn", "WL, Accepted", "WL, Accepted, Attending", "WL, Accepted, Withdrawn", "WL, Rejected", "WL, Rejected, Withdrawn",
-                   "WL, Withdrawn")
+        alist <-
+            c(
+                "Accepted",
+                "Accepted, Attending",
+                "Accepted, Deferred",
+                "Accepted, Deferred, Attending",
+                "Accepted, Deferred, Withdrawn",
+                "Accepted, Withdrawn"
+            )
+        rlist <-
+            c("Rejected",
+              "Rejected, Deferred",
+              "Rejected, Withdrawn")
+        wlist <-
+            c(
+                "Waitlisted",
+                "Waitlisted, Deferred",
+                "Waitlisted, Withdrawn",
+                "WL, Accepted",
+                "WL, Accepted, Attending",
+                "WL, Accepted, Withdrawn",
+                "WL, Rejected",
+                "WL, Rejected, Withdrawn",
+                "WL, Withdrawn"
+            )
         rlist2 <- c("Accepted", "Rejected", "Waitlisted")
         df.temp$Result <- as.character(df.temp$Result)
-        if(input$resultbin == "Yes"){
+        if (input$resultbin == "Yes") {
             df.temp$Result[df.temp$Result %in% alist] <- "Accepted"
             df.temp$Result[df.temp$Result %in% rlist] <- "Rejected"
-            df.temp$Result[df.temp$Result %in% wlist] <- "Waitlisted"
-            df.temp <- df.temp[df.temp$Result %in% rlist2,]
-        }else{
-            df.temp <- df.temp[df.temp$Result %in% input$result_in,]
+            df.temp$Result[df.temp$Result %in% wlist] <-
+                "Waitlisted"
+            df.temp <- df.temp[df.temp$Result %in% rlist2, ]
+        } else{
+            df.temp <- df.temp[df.temp$Result %in% input$result_in, ]
         }
         
         return(df.temp)
@@ -1209,11 +1361,11 @@ server <- function(input, output, session) {
     schoollist <- reactive({
         input$school_in
     })
-    # 
+    #
     # inv_cumsum <- function(x) {
     #     sum(x) - cumsum(x) + x
     # }
-    # 
+    #
     # StatFillLabels <- ggproto(
     #     "StatFillLabels",
     #     StatCount,
@@ -1244,7 +1396,7 @@ server <- function(input, output, session) {
     #     },
     #     default_aes = aes(y = ..ylabel.., label = paste0(round(100 * ..prop.., digits = 1), "%"))
     # )
-    # 
+    #
     # stat_fill_labels <- function(mapping = NULL, data = NULL, geom = "text",
     #                              position = "identity", width = NULL, na.rm = FALSE, show.legend = NA,
     #                              inherit.aes = TRUE, ...) {
@@ -1254,7 +1406,7 @@ server <- function(input, output, session) {
     #         params = list(na.rm = na.rm, ...)
     #     )
     # }
-    # 
+    #
     # StatStackLabels <- ggproto(
     #     "StatStackLabels",
     #     StatCount,
@@ -1284,7 +1436,7 @@ server <- function(input, output, session) {
     #     },
     #     default_aes = aes(y = ..ylabel.., label = ..count..)
     # )
-    # 
+    #
     # stat_stack_labels <- function(mapping = NULL, data = NULL, geom = "text",
     #                               position = "identity", width = NULL, na.rm = FALSE, show.legend = NA,
     #                               inherit.aes = TRUE, ...) {
@@ -1298,77 +1450,80 @@ server <- function(input, output, session) {
         df.temp2 <- dfPlot()
         df.temp2 <-
             df.temp2[df.temp2$LSAT >= input$lsat_in[1] &
-                        df.temp2$LSAT <= input$lsat_in[2],]
-        df.temp2 <- df.temp2[is.na(df.temp2$User) == FALSE,]
+                         df.temp2$LSAT <= input$lsat_in[2], ]
+        df.temp2 <- df.temp2[is.na(df.temp2$User) == FALSE, ]
         df.temp2 <-
             df.temp2[df.temp2$GPA >= input$gpa_in[1] &
-                        df.temp2$GPA <= input$gpa_in[2],]
-        df.temp2 <- df.temp2[is.na(df.temp2$User) == FALSE,]
+                         df.temp2$GPA <= input$gpa_in[2], ]
+        df.temp2 <- df.temp2[is.na(df.temp2$User) == FALSE, ]
         
         df.temp2$LSAT <- as.factor(df.temp2$LSAT)
         df.temp2$Result <- as.factor(df.temp2$Result)
         gg_color_hue <- function(n) {
             hues = seq(15, 375, length = n + 1)
-            hcl(h = hues, l = 65, c = 100)[1:n]
+            hcl(h = hues,
+                l = 65,
+                c = 100)[1:n]
         }
-        cols <- c(gg_color_hue(3)[1:2],"khaki")
+        cols <- c(gg_color_hue(3)[1:2], "khaki")
         
         cr <- gg_color_hue(3)[1]
         ca <- gg_color_hue(3)[2]
         cw <- "khaki"
         # cw <- gg_color_hue(3)[3]
         
-        cols2 <- c(cr,ca,cw)
-        if (input$resultbin == "Yes"){
+        cols2 <- c(cr, ca, cw)
+        if (input$resultbin == "Yes") {
+            p1 <- ggplot(df.temp2, aes(x = LSAT,
+                                       fill = Result)) +
+                geom_bar(colour = "black") +
+                facet_grid(. ~ School, scales = "free_y") +
+                scale_x_discrete(drop = FALSE) +
+                stat_stack_labels(color = "black") +
+                scale_fill_manual(values = c(
+                    "Accepted" = ca,
+                    "Rejected" = cr,
+                    "Waitlisted" = cw
+                ))
+            
+            p2 <- ggplot(df.temp2, aes(x = LSAT,
+                                       fill = Result)) +
+                geom_bar(position = "fill") +
+                facet_grid(. ~ School) +
+                scale_x_discrete(drop = FALSE) +
+                stat_fill_labels() +
+                scale_fill_manual(values = c(
+                    "Accepted" = ca,
+                    "Rejected" = cr,
+                    "Waitlisted" = cw
+                ))
+            
+        } else{
             p1 <- ggplot(df.temp2, aes(
                 x = LSAT,
-                fill = Result
+                fill = Result,
+                color = Result
             )) +
                 geom_bar(colour = "black") +
                 facet_grid(. ~ School, scales = "free_y") +
-                scale_x_discrete(drop = FALSE)+
-                stat_stack_labels(color = "black")+
-                scale_fill_manual(values = c("Accepted" = ca, "Rejected" = cr, "Waitlisted" = cw))
+                scale_x_discrete(drop = FALSE) +
+                stat_stack_labels(color = "black")
             
-            p2 <- ggplot(df.temp2, aes(
-                x = LSAT,
-                fill = Result
-            )) +
+            p2 <- ggplot(df.temp2, aes(x = LSAT,
+                                       fill = Result)) +
                 geom_bar(position = "fill") +
                 facet_grid(. ~ School) +
-                scale_x_discrete(drop = FALSE)+
-                stat_fill_labels()+
-                scale_fill_manual(values = c("Accepted" = ca, "Rejected" = cr, "Waitlisted" = cw))
-            
-        }else{
-            p1 <- ggplot(df.temp2, aes(
-            x = LSAT,
-            fill = Result,
-            color = Result
-        )) +
-            geom_bar(colour = "black") +
-            facet_grid(. ~ School, scales = "free_y") +
-            scale_x_discrete(drop = FALSE)+
-            stat_stack_labels(color = "black")
-        
-        p2 <- ggplot(df.temp2, aes(
-            x = LSAT,
-            fill = Result
-        )) +
-            geom_bar(position = "fill") +
-            facet_grid(. ~ School) +
-            scale_x_discrete(drop = FALSE)+
-            stat_fill_labels()
+                scale_x_discrete(drop = FALSE) +
+                stat_fill_labels()
         }
         
-        if (input$bar_type == "Stack"){
-            
-            return(ggplotly(p1,tooltip = c("x", "y", "n","fill")))
+        if (input$bar_type == "Stack") {
+            return(ggplotly(p1, tooltip = c("x", "y", "n", "fill")))
         }
-        if (input$bar_type == "Fill"){
+        if (input$bar_type == "Fill") {
             return(ggplotly(p2))
         }
-            # p3 <- p2
+        # p3 <- p2
         # ggplotly(p3)
     })
     output$hist <- renderPlotly({
@@ -1378,54 +1533,68 @@ server <- function(input, output, session) {
         df1 <- dfPlot()
         
         df1$Decision <- as.Date(df1$Decision)
-        df1 <- df1[df1$Decision >= as.Date("2017-1-1"),]
-        df1 <- df1[is.na(df1$User) == FALSE,]
+        df1 <- df1[df1$Decision >= as.Date("2017-1-1"), ]
+        df1 <- df1[is.na(df1$User) == FALSE, ]
         df1$Result <- as.factor(df1$Result)
         
         gg_color_hue <- function(n) {
             hues = seq(15, 375, length = n + 1)
-            hcl(h = hues, l = 65, c = 100)[1:n]
+            hcl(h = hues,
+                l = 65,
+                c = 100)[1:n]
         }
-        cols <- c(gg_color_hue(3)[1:2],"khaki")
+        cols <- c(gg_color_hue(3)[1:2], "khaki")
         
         cr <- gg_color_hue(3)[1]
         ca <- gg_color_hue(3)[2]
         cw <- "khaki"
         # cw <- gg_color_hue(3)[3]
         
-        cols2 <- c(cr,ca,cw)
-        if (input$resultbin == "Yes"){
-        p1 <- ggplot(data = df1, aes(
-            x = Decision,
-            y = Result,
-            label = as.Date(Decision)
-        )) +
-            geom_count(aes(fill = Result),color = "black", alpha = 0.7) +
-            facet_grid(School ~ .) +
-            scale_x_date(
-                "Time",
-                limits = c(
-                    as.Date(min(df1$Decision)),
-                    as.Date(max(df1$Decision))
-                ),
-                date_breaks = "1 week",
-                date_labels = "%m-%d"
-            )+
-            scale_fill_manual(values = c("Accepted" = ca, "Rejected" = cr, "Waitlisted" = cw))
-        }else{
+        cols2 <- c(cr, ca, cw)
+        if (input$resultbin == "Yes") {
             p1 <- ggplot(data = df1, aes(
                 x = Decision,
                 y = Result,
                 label = as.Date(Decision)
             )) +
-                geom_count(aes(fill = Result),color = "black", alpha = 0.7) +
+                geom_count(aes(fill = Result),
+                           color = "black",
+                           alpha = 0.7) +
                 facet_grid(School ~ .) +
                 scale_x_date(
                     "Time",
-                    limits = c(
-                        as.Date(min(df1$Decision)),
-                        as.Date(max(df1$Decision))
-                    ),
+                    limits = c(as.Date(min(
+                        df1$Decision
+                    )),
+                    as.Date(max(
+                        df1$Decision
+                    ))),
+                    date_breaks = "1 week",
+                    date_labels = "%m-%d"
+                ) +
+                scale_fill_manual(values = c(
+                    "Accepted" = ca,
+                    "Rejected" = cr,
+                    "Waitlisted" = cw
+                ))
+        } else{
+            p1 <- ggplot(data = df1, aes(
+                x = Decision,
+                y = Result,
+                label = as.Date(Decision)
+            )) +
+                geom_count(aes(fill = Result),
+                           color = "black",
+                           alpha = 0.7) +
+                facet_grid(School ~ .) +
+                scale_x_date(
+                    "Time",
+                    limits = c(as.Date(min(
+                        df1$Decision
+                    )),
+                    as.Date(max(
+                        df1$Decision
+                    ))),
                     date_breaks = "1 week",
                     date_labels = "%m-%d"
                 )
@@ -1433,12 +1602,113 @@ server <- function(input, output, session) {
         return(ggplotly(p1, tooltip = c("n", "label")))
         # ggtitle("February 2020 T13 Waves")
     })
+    
+    output$predplot1 <- renderPlotly({
+        df_t <- query_result()
+        school_name <- input$predschool
+        df_t$Result[df_t$Result %in% c('Accepted, Withdrawn')] <-
+            "Accepted"
+        df_t$Result[df_t$Result %in% c('Accepted, Attending')] <-
+            "Accepted"
+        df_t$Result[df_t$Result %in% c('WL, Accepted, Attending')] <-
+            "Waitlisted"
+        df_t$Result[df_t$Result %in% c('WL, Accepted, Withdrawn')] <-
+            "Waitlisted"
+        df_t$Result[df_t$Result %in% c('Waitlisted, Withdrawn')] <-
+            "Waitlisted"
+        df_t$Result[df_t$Result %in% c('WL, Withdrawn')] <-
+            "Waitlisted"
+        df_t$Result[df_t$Result %in% c('Rejected, Withdrawn')] <-
+            "Rejected"
+        
+        df_t <-
+            subset(df_t, School == school_name) #changed from df to alldata because I commented out urm filter
+        df_t <- subset(df_t, URM == input$urm_in)
+        if (input$sent_yn2 == 1) {
+            df_t <- subset(df_t, month(Sent) %in% input$month_in)
+        }
+        df_t$pr <- ifelse(df_t$Result == "Accepted", 1, 0)
+        df_t <- subset(df_t, is.na(df_t$GPA) == FALSE)
+        df_t <- subset(df_t, is.na(df_t$pr) == FALSE)
+        model <-
+            glm(data = df_t,
+                pr ~ GPA + LSAT,
+                family = binomial(link = logit))
+        
+        v1 <- visreg(
+                    model,
+                    "LSAT",
+                    scale = "response",
+                    rug = 2,
+                    xlab = "LSAT Score",
+                    ylab = "Pr(Accepted)",
+                    type = "conditional",
+                    by = "GPA",
+                    breaks = c(input$gpa_in2-0.05,input$gpa_in2,input$gpa_in2+0.05),
+                    gg = TRUE)+
+            scale_x_continuous(limits = c(150,180),breaks = c(150:180))
+        
+        return(ggplotly(v1+ggtitle(paste(school_name," - ","Pr(Accepted) by LSAT by GPA",sep = ""))))
+    })
+    
+    output$predplot2 <- renderPlotly({
+        df_t <- query_result()
+        school_name <- input$predschool
+        df_t$Result[df_t$Result %in% c('Accepted, Withdrawn')] <-
+            "Accepted"
+        df_t$Result[df_t$Result %in% c('Accepted, Attending')] <-
+            "Accepted"
+        df_t$Result[df_t$Result %in% c('WL, Accepted, Attending')] <-
+            "Waitlisted"
+        df_t$Result[df_t$Result %in% c('WL, Accepted, Withdrawn')] <-
+            "Waitlisted"
+        df_t$Result[df_t$Result %in% c('Waitlisted, Withdrawn')] <-
+            "Waitlisted"
+        df_t$Result[df_t$Result %in% c('WL, Withdrawn')] <-
+            "Waitlisted"
+        df_t$Result[df_t$Result %in% c('Rejected, Withdrawn')] <-
+            "Rejected"
+        
+        df_t <-
+            subset(df_t, School == school_name) #changed from df to alldata because I commented out urm filter
+        df_t <- subset(df_t, URM == input$urm_in)
+        if (input$sent_yn2 == 1) {
+            df_t <- subset(df_t, month(Sent) %in% input$month_in)
+        }
+        df_t$pr <- ifelse(df_t$Result == "Accepted", 1, 0)
+        df_t <- subset(df_t, is.na(df_t$GPA) == FALSE)
+        df_t <- subset(df_t, is.na(df_t$pr) == FALSE)
+        model <-
+            glm(data = df_t,
+                pr ~ GPA + LSAT,
+                family = binomial(link = logit))
+        
+        v1 <- visreg(
+            model,
+            "GPA",
+            scale = "response",
+            rug = 2,
+            xlab = "GPA",
+            ylab = "Pr(Accepted)",
+            type = "conditional",
+            by = "LSAT",
+            breaks = c(input$lsat_in2-1,input$lsat_in2,input$lsat_in2+1),
+            gg = TRUE)+
+            scale_x_continuous(limits = c(2.5,4.33),breaks = c(seq(2.5,4.3,0.1)))
+        
+        return(ggplotly(v1+ggtitle(paste(school_name," - ","Pr(Accepted) by GPA by LSAT",sep = ""))))
+    })
+    
+    
+    
     query_result2 <-  reactive({
         df5 <- query_result()
-        xy <- vector("list", 0) # create an empty list into which values are to be filled
+        xy <-
+            vector("list", 0) # create an empty list into which values are to be filled
         school_names <- listOutput()[, 1]
-        for (i in school_names){
-            df_t <- subset(df5, School == i) #changed from df to alldata because I commented out urm filter
+        for (i in school_names) {
+            df_t <-
+                subset(df5, School == i) #changed from df to alldata because I commented out urm filter
             df5$Result[df5$Result %in% c('Accepted, Withdrawn')] <-
                 "Accepted"
             df5$Result[df5$Result %in% c('Accepted, Attending')] <-
@@ -1460,24 +1730,36 @@ server <- function(input, output, session) {
             df_t$pr <- ifelse(df_t$Result == "Accepted", 1, 0)
             df_t <- subset(df_t, is.na(df_t$GPA) == FALSE)
             df_t <- subset(df_t, is.na(df_t$pr) == FALSE)
-            model <- glm(data=df_t, pr ~ GPA+LSAT, family=binomial(link=logit))
+            model <-
+                glm(data = df_t,
+                    pr ~ GPA + LSAT,
+                    family = binomial(link = logit))
             g.seq <- data.frame(matrix(ncol = 2, nrow = 1))
-            colnames(g.seq) <- c("GPA","LSAT")
+            colnames(g.seq) <- c("GPA", "LSAT")
             g.seq$GPA <- input$gpa_in2
             g.seq$LSAT <- input$lsat_in2
             m.df <- g.seq
-            m.df$pr <- predict(model, newdata = m.df, type = "response")
+            m.df$pr <-
+                predict(model, newdata = m.df, type = "response")
             m.df$School <- i
             m.df <-
                 data.frame(lapply(m.df, as.character), stringsAsFactors = FALSE)
             ilink <- family(model)$linkinv
-            pd <- cbind(g.seq, predict(model, g.seq, type = "link", se.fit = TRUE)[1:2])
-            pd <- transform(pd, Fitted = ilink(fit), Upper = ilink(fit + (2 * se.fit)),
-                            Lower = ilink(fit - (2 * se.fit)))
-            pd <- pd[,-c(2:4)]
+            pd <-
+                cbind(g.seq,
+                      predict(model, g.seq, type = "link", se.fit = TRUE)[1:2])
+            pd <-
+                transform(
+                    pd,
+                    Fitted = ilink(fit),
+                    Upper = ilink(fit + (2 * se.fit)),
+                    Lower = ilink(fit - (2 * se.fit))
+                )
+            pd <- pd[, -c(2:4)]
             pd <-
                 data.frame(lapply(pd, as.character), stringsAsFactors = FALSE)
-            df_w <- subset(df5, School == i) #changed from df to alldata because I commented out urm filter
+            df_w <-
+                subset(df5, School == i) #changed from df to alldata because I commented out urm filter
             df_w <- subset(df_w, URM == input$urm_in)
             if (input$sent_yn2 == 1) {
                 df_w <- subset(df_w, month(Sent) %in% input$month_in)
@@ -1485,19 +1767,30 @@ server <- function(input, output, session) {
             df_w$wpr <- ifelse(df_w$Result == "Waitlisted", 1, 0)
             df_w <- subset(df_w, is.na(df_w$GPA) == FALSE)
             df_w <- subset(df_w, is.na(df_w$wpr) == FALSE)
-            wmodel <- glm(data=df_w, wpr ~ GPA+LSAT, family=binomial(link=logit))
+            wmodel <-
+                glm(data = df_w,
+                    wpr ~ GPA + LSAT,
+                    family = binomial(link = logit))
             w.df <- g.seq
-            w.df$wpr <- predict(wmodel, newdata = w.df, type = "response")
+            w.df$wpr <-
+                predict(wmodel, newdata = w.df, type = "response")
             w.df <-
                 data.frame(lapply(w.df, as.character), stringsAsFactors = FALSE)
             ilink <- family(wmodel)$linkinv
-            wpd <- cbind(g.seq, predict(wmodel, g.seq, type = "link", se.fit = TRUE)[1:2])
-            wpd <- transform(wpd, Fitted = ilink(fit), WUpper = ilink(fit + (2 * se.fit)),
-                             WLower = ilink(fit - (2 * se.fit)))
-            wpd <- wpd[,-c(2:4)]
+            wpd <-
+                cbind(g.seq,
+                      predict(wmodel, g.seq, type = "link", se.fit = TRUE)[1:2])
+            wpd <-
+                transform(
+                    wpd,
+                    Fitted = ilink(fit),
+                    WUpper = ilink(fit + (2 * se.fit)),
+                    WLower = ilink(fit - (2 * se.fit))
+                )
+            wpd <- wpd[, -c(2:4)]
             wpd <-
                 data.frame(lapply(wpd, as.character), stringsAsFactors = FALSE)
-            m.df <- merge(m.df,w.df, by = "GPA")
+            m.df <- merge(m.df, w.df, by = "GPA")
             pd <- merge(pd, wpd, by = "GPA")
             xy[[i]] <- merge(m.df, pd)
         }
@@ -1508,15 +1801,17 @@ server <- function(input, output, session) {
         dffr$Fitted.x <- NULL
         dffr$Fitted.y <- NULL
         dffr$GPA <- NULL
-        dffr$pr <- round(as.numeric(dffr$pr),4)*100
-        dffr$wpr <- round(as.numeric(dffr$wpr),4)*100
-        dffr$Upper <- round(as.numeric(dffr$Upper),4)*100
-        dffr$WUpper <- round(as.numeric(dffr$WUpper),4)*100
-        dffr$Lower <- round(as.numeric(dffr$Lower),4)*100
-        dffr$WLower <- round(as.numeric(dffr$WLower),4)*100
-        dffr$conf <- paste(dffr$Lower, "% to ", dffr$Upper,"%", sep = "")
-        dffr$wconf <- paste(dffr$WLower, "% to ", dffr$WUpper,"%", sep = "")
-        ranklist <- schools()
+        dffr$pr <- round(as.numeric(dffr$pr), 4) * 100
+        dffr$wpr <- round(as.numeric(dffr$wpr), 4) * 100
+        dffr$Upper <- round(as.numeric(dffr$Upper), 4) * 100
+        dffr$WUpper <- round(as.numeric(dffr$WUpper), 4) * 100
+        dffr$Lower <- round(as.numeric(dffr$Lower), 4) * 100
+        dffr$WLower <- round(as.numeric(dffr$WLower), 4) * 100
+        dffr$conf <-
+            paste(dffr$Lower, "% to ", dffr$Upper, "%", sep = "")
+        dffr$wconf <-
+            paste(dffr$WLower, "% to ", dffr$WUpper, "%", sep = "")
+        ranklist <- schools2()
         dffr$rank <- ranklist$rank[match(dffr$School, ranklist$X2)]
         dffr$rank <- as.integer(dffr$rank)
         dffr$School <- NULL
@@ -1524,7 +1819,7 @@ server <- function(input, output, session) {
         dffr$Upper <- NULL
         dffr$WLower <- NULL
         dffr$WUpper <- NULL
-        dffr <- dffr[, c(5,1,3,2,4)]
+        dffr <- dffr[, c(5, 1, 3, 2, 4)]
         CN <-
             c(
                 "Rank",
@@ -1535,39 +1830,56 @@ server <- function(input, output, session) {
             )
         colnames(dffr) <- CN
         
-        if (input$rank_yn == 1) {
-            rankrange <- seq(input$rank_in2[1],input$rank_in2[2],1)
-            dffr <- subset(dffr, dffr$Rank %in% rankrange)
-        }
-        
-
         
         
         
-        dffr <- DT::datatable(dffr, rownames = TRUE, options = list(lengthMenu = c(50,100), pageLength = 50,
-                                                                    order = list(1, 'asc'))) %>% formatStyle("Pr. Accepted (%)",
-                                                                                                        background = styleColorBar(range(c(0,100)), 'limegreen'),
-                                                                                                        backgroundSize = '98% 88%',
-                                                                                                        backgroundRepeat = 'no-repeat',
-                                                                                                        backgroundPosition = 'center')%>% formatStyle("Pr. WL (%)",
-                                                                                                                                                      background = styleColorBar(range(c(0,100)), 'khaki'),
-                                                                                                                                                      backgroundSize = '98% 88%',
-                                                                                                                                                      backgroundRepeat = 'no-repeat',
-                                                                                                                                                      backgroundPosition = 'center')
+        
+        
+        dffr <-
+            DT::datatable(
+                dffr,
+                rownames = TRUE,
+                options = list(
+                    lengthMenu = c(50, 100),
+                    pageLength = 50,
+                    order = list(1, 'asc')
+                )
+            ) %>% formatStyle(
+                "Pr. Accepted (%)",
+                background = styleColorBar(range(c(0, 100)), 'limegreen'),
+                backgroundSize = '98% 88%',
+                backgroundRepeat = 'no-repeat',
+                backgroundPosition = 'center'
+            ) %>% formatStyle(
+                "Pr. WL (%)",
+                background = styleColorBar(range(c(0, 100)), 'khaki'),
+                backgroundSize = '98% 88%',
+                backgroundRepeat = 'no-repeat',
+                backgroundPosition = 'center'
+            )
         dffr
-    
+        
         # return(datatable(dfPlot(),options = list(order=list(14,'desc')),rownames = FALSE)%>% formatStyle(
         #     "Result",
         #     target = "row",
         #     backgroundColor = styleEqual(c(rlist,alist,wlist),cols2))%>% formatStyle(columns = c(1:ncol(query_result())),fontSize = '85%'))
-        # 
-        })
+        #
+    })
     
     
-    output$rtable2 <- DT::renderDataTable(query_result2(),options = list(lengthMenu = c(50,100), pageLength = 50,
-                                                                         autoWidth = TRUE,
-                                                                         columnDefs = list(list(width = '200px', targets = c(1, 3))),
-                                                                         order = list(1, 'asc'))) 
+    output$rtable2 <-
+        DT::renderDataTable(
+            query_result2(),
+            options = list(
+                lengthMenu = c(50, 100),
+                pageLength = 50,
+                autoWidth = TRUE,
+                columnDefs = list(list(
+                    width = '200px', targets = c(1, 3)
+                )),
+                order = list(1, 'asc')
+            )
+        )
     
     dfMerge <- eventReactive(input$mergeButton, {
         df.temp1 <- dfScrape()
@@ -1587,11 +1899,11 @@ server <- function(input, output, session) {
                 paste(df.temp1$User, df.temp1$School, df.temp1$Cycle, sep = "")
             )), "No", "Yes")
         
-        olddata <- olddata[olddata$check == "No",]
+        olddata <- olddata[olddata$check == "No", ]
         olddata$check <- NULL
         return(rbind(olddata, df.temp1))
     })
-   
+    
     observeEvent(input$mergeButton, {
         updateRadioButtons(session, "dataselector",
                            selected = "c")
@@ -1600,7 +1912,7 @@ server <- function(input, output, session) {
     
     # posn.j <- position_jitter(width = 0.1,height = 0.01)
     # posn.j <- position_jitter(width = 0.2,height = 0.05)
-    # 
+    #
     # png(file="JS5.png", width=2200, height=1300, res=160)
     # ggplot(df10, aes(x = lsat, y = gpa, color = factor(result)))+
     #     geom_point(size = 5, alpha = 0.3, position = posn.j)+
@@ -1611,17 +1923,17 @@ server <- function(input, output, session) {
     # dev.off()
     output$schol1 <- renderPlotly({
         df1 <- query_result()
-        posn.j <- position_jitter(width = 0.2,height = 0.05)
-        df1 <- df1[df1$School %in% input$school1,]
-        df1 <- df1[df1$Money != 0,]
-        df1 <- df1[is.na(df1$Money) == FALSE,]
-        df1 <- df1[df1$Money >= as.numeric(input$money_val1),]
-        df1 <- df1[df1$Money <= as.numeric(input$money_val2),]
-        df1 <- df1[is.na(df1$Money) == FALSE,]
-        df1 <- df1[is.na(df1$GPA) == FALSE,]
+        posn.j <- position_jitter(width = 0.2, height = 0.05)
+        df1 <- df1[df1$School %in% input$school1, ]
+        df1 <- df1[df1$Money != 0, ]
+        df1 <- df1[is.na(df1$Money) == FALSE, ]
+        df1 <- df1[df1$Money >= as.numeric(input$money_val1), ]
+        df1 <- df1[df1$Money <= as.numeric(input$money_val2), ]
+        df1 <- df1[is.na(df1$Money) == FALSE, ]
+        df1 <- df1[is.na(df1$GPA) == FALSE, ]
         gmin <- min(df1$GPA)
         gmax <- max(df1$GPA)
-        b1 <- seq(gmin,gmax,0.05)
+        b1 <- seq(gmin, gmax, 0.05)
         df1$Money <- as.factor(df1$Money)
         df1$LSAT <- as.factor(df1$LSAT)
         p1 <- ggplot(df1, aes(
@@ -1629,26 +1941,37 @@ server <- function(input, output, session) {
             y = GPA,
             label = User
         )) +
-            geom_point(aes(fill = Money),color = "black",size = 2.4, alpha = 0.7, position = posn.j)+
-            scale_y_continuous("GPA",limits = c(gmin,gmax),breaks = b1)+
-            scale_x_discrete("LSAT")+
-            geom_text(aes(label = User), color = "white", nudge_y = -100)
+            geom_point(
+                aes(fill = Money),
+                color = "black",
+                size = 2.4,
+                alpha = 0.7,
+                position = posn.j
+            ) +
+            scale_y_continuous("GPA",
+                               limits = c(gmin, gmax),
+                               breaks = b1) +
+            scale_x_discrete("LSAT") +
+            geom_text(aes(label = User),
+                      color = "white",
+                      nudge_y = -100) +
+            ggtitle(paste(df1$School))
         return(ggplotly(p1))
     })
     
     output$schol2 <- renderPlotly({
         df1 <- query_result()
-        posn.j <- position_jitter(width = 0.2,height = 0.05)
-        df1 <- df1[df1$School %in% input$school2,]
-        df1 <- df1[df1$Money != 0,]
-        df1 <- df1[is.na(df1$Money) == FALSE,]
-        df1 <- df1[df1$Money >= as.numeric(input$money_val1),]
-        df1 <- df1[df1$Money <= as.numeric(input$money_val2),]
-        df1 <- df1[is.na(df1$Money) == FALSE,]
-        df1 <- df1[is.na(df1$GPA) == FALSE,]
+        posn.j <- position_jitter(width = 0.2, height = 0.05)
+        df1 <- df1[df1$School %in% input$school2, ]
+        df1 <- df1[df1$Money != 0, ]
+        df1 <- df1[is.na(df1$Money) == FALSE, ]
+        df1 <- df1[df1$Money >= as.numeric(input$money_val1), ]
+        df1 <- df1[df1$Money <= as.numeric(input$money_val2), ]
+        df1 <- df1[is.na(df1$Money) == FALSE, ]
+        df1 <- df1[is.na(df1$GPA) == FALSE, ]
         gmin <- min(df1$GPA)
         gmax <- max(df1$GPA)
-        b1 <- seq(gmin,gmax,0.05)
+        b1 <- seq(gmin, gmax, 0.05)
         df1$Money <- as.factor(df1$Money)
         df1$LSAT <- as.factor(df1$LSAT)
         p1 <- ggplot(df1, aes(
@@ -1656,17 +1979,28 @@ server <- function(input, output, session) {
             y = GPA,
             label = User
         )) +
-            geom_point(aes(fill = Money),color = "grey2",size = 2.4, alpha = 0.7, position = posn.j)+
-            scale_y_continuous("GPA",limits = c(gmin,gmax),breaks = b1)+
-            scale_x_discrete("LSAT")+
-            geom_text(aes(label = User), color = "white", nudge_y = -100)
+            geom_point(
+                aes(fill = Money),
+                color = "grey2",
+                size = 2.4,
+                alpha = 0.7,
+                position = posn.j
+            ) +
+            scale_y_continuous("GPA",
+                               limits = c(gmin, gmax),
+                               breaks = b1) +
+            scale_x_discrete("LSAT") +
+            geom_text(aes(label = User),
+                      color = "white",
+                      nudge_y = -100) +
+            ggtitle(paste(df1$School))
         return(ggplotly(p1, tooltip = "all"))
     })
     
     
     # output$waves <- renderPlot({
     #     df1 <- dfPlot()
-    #     
+    #
     #     p1 <- ggplot(df.temp2, aes(
     #         x = factor(LSAT),
     #         y = GPA
@@ -1674,7 +2008,7 @@ server <- function(input, output, session) {
     #         geom_bar(colour = "black") +
     #         facet_grid(. ~ School) +
     #         scale_x_discrete(drop = FALSE)
-    #     
+    #
     #     ggplot(data = df1, aes(
     #         x = as.Date(Decision),
     #         y = factor(Result),
@@ -1693,7 +2027,7 @@ server <- function(input, output, session) {
     #         )
     # })
     
-
+    
     
     
 }
