@@ -1,5 +1,5 @@
 093b67e1a409ad67a2fe37990f7f5feb *CITATION
-bda3a4865a1c0b7047e16568a6f66a5c *DESCRIPTION
+6d5af796cef746b66606dcbb5aa01bba *DESCRIPTION
 2c3fc05097796e1896e3a4905dc55118 *INDEX
 29a9012941a6bcb26bf0fb4382c5dd75 *LICENSE
 5d746e8982c6bb7aeb8e70b0c3b55a9c *Meta/Rd.rds
@@ -7,7 +7,7 @@ bda3a4865a1c0b7047e16568a6f66a5c *DESCRIPTION
 2705a9566ab6ecc29cecf6a5c9fe8923 *Meta/hsearch.rds
 193335a07898dba25af6ac4b38651b4a *Meta/links.rds
 5c7159b74bda1e47467a80131bc3c560 *Meta/nsInfo.rds
-effbc64a10aebe00df62114e8f069137 *Meta/package.rds
+ce2f447fa4fc749b74144324b766d643 *Meta/package.rds
 12b1df218f11430f0cf409864d819d81 *Meta/vignette.rds
 f5f79a80babc026ec45820831b75e0ff *NAMESPACE
 daf420ba985a342daee5144af212816d *NEWS.md
@@ -23,8 +23,8 @@ d1d2205b69770592ce886dd64f393c58 *doc/paper.html
 9686601334ca79bd8bd68b098c800ab2 *help/AnIndex
 3a813d074557640628654a6b78c5cee0 *help/aliases.rds
 f7c787aff996e89dab2dfd867cab75bc *help/figures/logo.png
-ae4b5bd671f6c3675d1046bb8a463d05 *help/paths.rds
-ca3b155f818b4bbcea7c579ec250f319 *help/tidyverse.rdb
-2b41d9a9c15a31c9fd18f271d1eaaf2b *help/tidyverse.rdx
+696780fe35c4f60971108b23d0aa14c4 *help/paths.rds
+91425f793a167f7933038426f2c252c6 *help/tidyverse.rdb
+d209fbc7ba79dadc60cf3a004369f0ec *help/tidyverse.rdx
 90e4c511aaf41622f8b7686cc791e014 *html/00Index.html
 b6763e6916890c631fdc3f2643803b1a *html/R.css
