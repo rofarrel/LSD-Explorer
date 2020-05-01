@@ -1,4 +1,6 @@
-# LSD-Explorer-v1.2
+# LSD-Explorer-v1.3
+
+**If you are from a law school, please visit https://rofarrel.shinyapps.io/LSD-Explorer-v-1-3/ for a web version of the app.**
 
 Check the releases for updates and changes here https://github.com/rofarrel/LSD-Explorer/releases
 
