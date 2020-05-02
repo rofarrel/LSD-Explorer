@@ -1,5 +1,5 @@
 # LSD-Explorer-v1.3 (Windows Only)
-![LSD Explorer](https://drive.google.com/file/d/1Pm0XRF1E4V3fE8mAX2mCU_H9OJcNL_jW/view?usp=sharing)
+![LSD Explorer](https://imgur.com/RcL6HNJ)
 
 **If you are from a law school, please visit https://rofarrel.shinyapps.io/LSD-Explorer-v-1-3/ for a web version of the app.**
 
