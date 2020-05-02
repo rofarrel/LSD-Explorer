@@ -6,7 +6,7 @@ Check the releases for updates and changes here https://github.com/rofarrel/LSD-
 
 ### **How to Use**
 
-1. Click the button to "Clone or Download" button to download the .zip folder.
+1. Click "Clone or Download" button to download the .zip folder.
 
 2. Extract the contents of the .zip folder after finished downloading.
 
