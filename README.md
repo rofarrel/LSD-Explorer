@@ -1,6 +1,15 @@
 # LSD-Explorer-v1.4 (Windows Only)
 ### Last Update: May 3, 2020
-    * Twitter functionality temporarily disabled.
+   1.4 Changelog:
+    * Twitter functionality suspended
+    * New color scheme
+    * Reformatted Data Management sidebar
+    * Moved notification box to middle of page
+    * Added Show/Hide functionality to prediction curves
+   1.5 Upcoming Changes:
+    Adding points to prediction curves with hover data
+    Improving hover data for existing plots
+    
 ![LSD Explorer](https://i.imgur.com/udwM9nJ.png)
 
 **If you are from a law school, please visit https://rofarrel.shinyapps.io/LSD-Explorer-v-1-4/ for a web version of the app.**
