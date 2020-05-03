@@ -1,4 +1,5 @@
-# LSD-Explorer-v1.4 (Windows Only) Last Update: May 3, 2020
+# LSD-Explorer-v1.4 (Windows Only)
+### Last Update: May 3, 2020
 ![LSD Explorer](https://i.imgur.com/c4YYQia.png)
 
 **If you are from a law school, please visit https://rofarrel.shinyapps.io/LSD-Explorer-v-1-4/ for a web version of the app.**
