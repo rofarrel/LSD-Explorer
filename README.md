@@ -9,13 +9,15 @@ Check the releases for updates and changes here https://github.com/rofarrel/LSD-
 
 ### **How to Use**
 
-1. Click "Clone or Download" button to download the .zip folder.
+    1. Click "Clone or Download" button to download the .zip folder.
 
-2. Extract the contents of the .zip folder after finished downloading.
+    2. Extract the contents of the .zip folder after finished downloading.
 
-3. Run the "LSD-Explorer by Riley O'Farrell" application in the LSD-Explorer-RO folder.
+    3. Run the "LSD-Explorer by Riley O'Farrell" application in the LSD-Explorer-RO folder.
 
-4. **Click "View" then "Reload" if only a white page appears**. The first time you scrape for data online, you will be prompted to allow PhantomJS to access the internet. This is the headless browser the scrape function uses to simulate webpages.
+    4. **Click "View" then "Reload" if only a white page appears**. The first time you scrape for data
+    online, you will be prompted to allow PhantomJS to access the internet. This is the headless browser
+    the scrape function uses to simulate webpages.
 
 ### **Notes**
 
