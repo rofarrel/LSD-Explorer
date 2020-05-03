@@ -1,12 +1,13 @@
 # LSD-Explorer-v1.4 (Windows Only)
 ### Last Update: May 3, 2020
-   1.4 Changelog:
+    1.4 Changelog:
     * Twitter functionality suspended
     * New color scheme
     * Reformatted Data Management sidebar
     * Moved notification box to middle of page
     * Added Show/Hide functionality to prediction curves
-   1.5 Upcoming Changes:
+    
+    1.5 Upcoming Changes:
     Adding points to prediction curves with hover data
     Improving hover data for existing plots
     
