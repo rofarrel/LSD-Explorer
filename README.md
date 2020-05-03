@@ -29,11 +29,12 @@ Check the releases for updates and changes here https://github.com/rofarrel/LSD-
 ![LSD Explorer](https://i.imgur.com/Oe4PhqC.png)
 
 * **The "Data-View" selector at the top left of the main page will determine what data you are viewing for the other 3 pages (View Data, Scholarship, Predictor).** Below the functions on the main page, there will be a table showing you which schools and cycles are available in the data you have selected. This will change with the "Data-View" selector if you have imported data and scraped data in the same session.
+![LSD Explorer](https://i.imgur.com/5HfgEri.png)
 
 * Once you have data, you can use the other tabs (View Data, Scholarship, Predictor, and Twitter). It is advisable to save the data via the "Save" button. This will allow you to download the data as a .csv file and be able to directly import this file on your next use via the 'Import Data' function.
 
 * The "View Data" tab allows you to explroe the data more closely. You can choose the schools and cycles you want to work with for the data. The histogram has both Fill and Stack options. The plots are interactive; you can click and drag to highlight and zoom in on sections of the plots. This is particularly useful for the time-series plot looking at decision "waves". Notice that the top right of each plot there are features you can enable for interacting with the plots.
-![LSD Explorer](https://i.imgur.com/udwM9nJ.png)
+![LSD Explorer](https://i.imgur.com/htx4iBU.png)
 
 * The Scholarship tab uses all cycles in available in the selection of data you are using, as selected by the "Data-View" selector on the main page.
 ![LSD Explorer](https://i.imgur.com/IVx0dQH.png)
