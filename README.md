@@ -1,15 +1,15 @@
 # LSD-Explorer-v1.5 (Windows Only)
 ### Last Update: May 3, 2020
 ```diff
-@@ 1.5 Changelog:  @@
-     * Twitter functionality disabled
-     * New color scheme
-     * Reformatted Data Management sidebar
-     * Moved notification box to middle of page
-     * Added Show/Hide functionality to prediction curves
-     * Added points to prediction curves with hover data
-     * Improved hover data for existing plots
-     * Added URM filters to 'View Data' and 'Scholarship' tabs
+@@  1.5 Changelog:  @@
+      * Twitter functionality disabled
+      * New color scheme
+      * Reformatted Data Management sidebar
+      * Moved notification box to middle of page
+      * Added Show/Hide functionality to prediction curves
+      * Added points to prediction curves with hover data
+      * Improved hover data for existing plots
+      * Added URM filters to 'View Data' and 'Scholarship' tabs
 ```
 
     
