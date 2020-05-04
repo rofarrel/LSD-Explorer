@@ -5,7 +5,7 @@
       * Twitter functionality disabled
       * New color scheme
       * Reformatted Data Management sidebar
-      * Moved notification box to middle of page
+      * Moved 'Get Data' notification box to center of page
       * Added Show/Hide functionality to prediction curves
       * Added points to prediction curves with hover data
       * Improved hover data for existing plots
