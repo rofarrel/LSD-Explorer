@@ -52,7 +52,7 @@ Check the releases for updates and changes here https://github.com/rofarrel/LSD-
 ![LSD Explorer](https://i.imgur.com/htx4iBU.png)
 
 * The Scholarship tab uses all cycles in available in the selection of data you are using, as selected by the "Data-View" selector on the main page.
-![LSD Explorer](https://i.imgur.com/IVx0dQH.png)
+![LSD Explorer](https://i.imgur.com/TbpefAB.png)
 
 * The Predictor page has graphs at the top which correspond to the school chosen in the dropdown box. Below the graphs is a table showing you your estimated chance of being admitted or waitlisted to all schools in the data **which is calculated based on the data you are viewing**. This means that it is predicting your chances based on the cycle(s) of data you in your dataset. 
 ![LSD Explorer](https://i.imgur.com/tMpMMpV.png)
