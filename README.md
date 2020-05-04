@@ -1,7 +1,7 @@
 # LSD-Explorer-v1.5 (Windows Only)
 ### Last Update: May 3, 2020
 ```diff
-@@ 1.5 Changelog:                                                                                          @@
+@@ 1.5 Changelog:  @@
      * Twitter functionality disabled
      * New color scheme
      * Reformatted Data Management sidebar
