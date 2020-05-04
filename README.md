@@ -55,6 +55,6 @@ Check the releases for updates and changes here https://github.com/rofarrel/LSD-
 ![LSD Explorer](https://i.imgur.com/IVx0dQH.png)
 
 * The Predictor page has graphs at the top which correspond to the school chosen in the dropdown box. Below the graphs is a table showing you your estimated chance of being admitted or waitlisted to all schools in the data **which is calculated based on the data you are viewing**. This means that it is predicting your chances based on the cycle(s) of data you in your dataset. 
-![LSD Explorer](https://i.imgur.com/sWDKbjW.png)
+![LSD Explorer](https://i.imgur.com/tMpMMpV.png)
 
 * To get more than 1 cycle in a dataset, you should scrape the schools you want for 1 cycle. Save that data. Load the file you just saved in the Load feature, then scrape data for the same schools but for the next cycle that you want. Once you have data loaded in the Load feature and data in the "Gather" feature, you can "update" the data and it will combine then. You can then save this new merged/updated dataset and can load it anytime in the future. *Remember, you do not need to scrape past cycles more than once. Those data will not change, as it is in the past. You only need to scrape data for any ongoing cycle.*
