@@ -1,0 +1,18 @@
+ContentScraper          ContentScraper
+Drv_fetchpage           Fetch page using web driver/Session
+Getencoding             Getencoding
+LinkExtractor           LinkExtractor
+LinkNormalization       Link Normalization
+Linkparameters          Get the list of parameters and values from an
+                        URL
+Linkparamsfilter        Link parameters filter
+ListProjects            ListProjects
+LoadHTMLFiles           LoadHTMLFiles @rdname LoadHTMLFiles
+LoginSession            Open a logged in Session
+Rcrawler                Rcrawler
+RobotParser             RobotParser fetch and parse robots.txt
+browser_path            Return browser (webdriver) location path
+install_browser         Install PhantomJS webdriver
+run_browser             Start up web driver process on localhost, with
+                        a random port
+stop_browser            Stop web driver process and Remove its Object
