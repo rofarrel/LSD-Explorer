@@ -30,7 +30,7 @@ if (is.null(suppressMessages(webshot:::find_phantom()))) {
 }
 # library(graph)
 # install_github("larmarange/JLutils", lib = )
-# here,rtweet,selectr,debugme,showimage,curl,webutils,knitr,ps,processx,callr,iterators,generics,farver,foreach,tidyr,httr,htmlwidgets,webshot,webdriver,doParallel,cellranger,withr,hms,tidyselect,vctrs,data.table,plyr,plotly,scales,splitstackshape,readr,shiny,readxl,Rcrawler,xml2,shinyFiles,lubridate,formattable,DT,visreg,htmltools,rlang,httpuv,later,promises,retry,websocket,fastmap,crayon,digest,xtable,jsonlite,mime,pillar,lifecycle,shinyjs,shinythemes
+# rtweet,selectr,debugme,showimage,curl,webutils,knitr,ps,processx,callr,iterators,generics,farver,foreach,tidyr,httr,htmlwidgets,webshot,webdriver,doParallel,cellranger,withr,hms,tidyselect,vctrs,data.table,plyr,plotly,scales,splitstackshape,readr,shiny,readxl,Rcrawler,xml2,shinyFiles,lubridate,formattable,DT,visreg,htmltools,rlang,httpuv,later,promises,retry,websocket,fastmap,crayon,digest,xtable,jsonlite,mime,pillar,lifecycle,shinyjs,shinythemes
 
 # Define UI for application that draws a histogram
 
@@ -40,6 +40,10 @@ if (is.null(suppressMessages(webshot:::find_phantom()))) {
     } else {
         x
     }
+}
+
+'%!in%' <- function(x, y) {
+    !('%in%'(x, y))
 }
 
 gg_color_hue <- function(n) {
@@ -171,353 +175,345 @@ stat_stack_labels <<-
 
 ui <- shiny::tagList(
     shinyjs::useShinyjs(),
-    tags$head(
-        tags$style(
-            HTML(".shiny-notification {
+    tags$head(tags$style(
+        HTML(
+            ".shiny-notification {
              position:fixed;
              top: calc(45%);
              left: calc(43%);
              width: 320px;
              }
              "
-            )
         )
-    ),
+    )),
     navbarPage(
-    theme = shinythemes::shinytheme("flatly"),
-    "LSD Explorer",
-    tabPanel("Data Management",
-             sidebarLayout(
-                 sidebarPanel(
-                     h4(strong("Data-View:")),
-                     p(
-                         "Here you may choose between different sets of data. This selection will be used for the other pages."
-                     ),
-                     radioButtons(
-                         inputId = "dataselector",
-                         label = "Select Data",
-                         choices = c(
-                             "Imported Previous Dataset" = "a",
-                             "Downloaded New Data" = "b",
-                             "Merged Old Data and New Data" = "c"
+        theme = shinythemes::shinytheme("flatly"),
+        "LSD Explorer",
+        tabPanel("Data Management",
+                 sidebarLayout(
+                     sidebarPanel(
+                         h4(strong("Data-View:")),
+                         p(
+                             "Here you may choose between different sets of data. This selection will be used for the other pages."
                          ),
-                         selected = "a"
-                     ),
-                     h4("_________________"),
-                     h4(strong("Get Data from LSD:")),
-                     p(
-                         "Here you can download live data from LawSchoolData.org. Select the Cycle and and Schools you wish to download"
-                     ),
-                     radioButtons(
-                         inputId = "cycleSelect",
-                         label = "Cycle",
-                         choices = c(
-                             "17-18" = 15,
-                             "18-19" = 16,
-                             "19-20" = 17,
-                             "20-21" = 18
+                         radioButtons(
+                             inputId = "dataselector",
+                             label = "Select Data",
+                             choices = c(
+                                 "Imported Previous Dataset" = "a",
+                                 "Downloaded New Data" = "b",
+                                 "Merged Old Data and New Data" = "c"
+                             ),
+                             selected = "a"
                          ),
-                         selected = 17,
-                         inline = TRUE
-                         
-                     ),
-                     selectInput(
-                         inputId = "tierSelect",
-                         label = "Select Group of Schools",
-                         choices = c(
-                             "T14" = 14,
-                             "T20" = 20,
-                             "Custom Selection" = 225
+                         h4("_________________"),
+                         h4(strong("Get Data from LSD:")),
+                         p(
+                             "Here you can download live data from LawSchoolData.org. Select the Cycle and and Schools you wish to download"
                          ),
-                         selected = "T14",
-                         multiple = FALSE
-                     ),
-                     uiOutput("sch_in"),
-                     actionButton(
-                         inputId = "scrapeButton",
-                         label = "Get Data...",
-                         icon = NULL,
-                         width = NULL
-                     )
-                     ,
-                     h4("_________________"),
-                     h4(strong("Import Data:")),
-                     p(
-                         "Here you may load a previously saved dataset. Select the file then click Import"
-                     ),
-                     fileInput(
-                         inputId = "dataload",
-                         label = "Browse for File",
-                         multiple = FALSE,
-                         buttonLabel = "Browse..",
-                         placeholder = "No files selected"
-                     ),
-                     actionButton(
-                         inputId = "loadButton",
-                         label = "Import Dataset",
-                         icon = NULL,
-                         width = NULL
-                     )
-                     ,
-                     h4("_________________"),
-                     h4(strong("Merge:")),
-                     p(
-                         "Here you may combine an imported old data set with any new data you have downloaded"
-                     ),
-                     actionButton(
-                         inputId = "mergeButton",
-                         label = "Merge",
-                         icon = NULL,
-                         width = NULL
-                     ),
-                     p("Save Currently Selected Data-View"),
-                     downloadButton(
-                         outputId = "saveMerged",
-                         label = "Save",
-                         icon = NULL,
-                         width = NULL
-                     ),
-                     width = 3
-                     
-                 ),
-                 mainPanel(
-                     uiOutput("introtext"),
-                     uiOutput("frontpage"))
-             )),
-    tabPanel("View Data",
-             sidebarLayout(
-                 sidebarPanel(
-                     p(
-                         "Specify an LSAT and GPA range to adjust the data visible in the histogram."
-                     ),
-                     sliderInput(
-                         inputId = "lsat_in",
-                         label = "LSAT Range",
-                         min = 120,
-                         max = 180,
-                         value = c(160, 170),
-                         step = 1
-                     ),
-                     
-                     sliderInput(
-                         inputId = "gpa_in",
-                         label = "GPA Range",
-                         min = 2.0,
-                         max = 4.33,
-                         value = c(3.5, 4.2),
-                         step = 0.01
-                     ),
-                     radioButtons(
-                         inputId = "bar_type",
-                         label = "Histogram Bar Type",
-                         choices = c("Fill", "Stack"),
-                         selected = "Fill"
-                     ),
-                     uiOutput("side1"),
-                     uiOutput("side3"),
-                     radioButtons(
-                         inputId = "complete_yn",
-                         label = "Use Complete Dates?",
-                         choices = c("Yes", "No"),
-                         selected = "No",
-                         inline = TRUE
-                     ),
-                     
-                     dateRangeInput(
-                         inputId = "complete_d",
-                         label = "Selected Complete date range in YYYY-MM-DD Format",
-                         start = "2018-09-01",
-                         end = "2020-01-01",
-                         separator = "to"
-                     ),
-                     p(
-                         em(
-                             "You may filter the data for the time-series plot by application 'Complete' dates to view when individuals with certain complete dates received their decisions"
+                         radioButtons(
+                             inputId = "cycleSelect",
+                             label = "Cycle",
+                             choices = c(
+                                 "17-18" = 15,
+                                 "18-19" = 16,
+                                 "19-20" = 17,
+                                 "20-21" = 18
+                             ),
+                             selected = 17,
+                             inline = TRUE
+                             
+                         ),
+                         selectInput(
+                             inputId = "tierSelect",
+                             label = "Select Group of Schools",
+                             choices = c(
+                                 "T14" = 14,
+                                 "T20" = 20,
+                                 "Custom Selection" = 225
+                             ),
+                             selected = "T14",
+                             multiple = FALSE
+                         ),
+                         uiOutput("sch_in"),
+                         actionButton(
+                             inputId = "scrapeButton",
+                             label = "Get Data...",
+                             icon = NULL,
+                             width = NULL
                          )
-                     ),
-                     radioButtons(
-                         inputId = "resultbin",
-                         label = "Use Simple Result Binning?",
-                         choices = c("Yes", "No"),
-                         selected = "Yes",
-                         inline = TRUE
-                     ),
-                     uiOutput("side2"),
-                     width = 3
-                     
-                     
-                 ),
-                 mainPanel(
-                     plotly::plotlyOutput("hist"),
-                     plotly::plotlyOutput("waves"),
-                     DT::dataTableOutput("temptable")
-                 )
-             )),
-    tabPanel("Scholarships",
-             sidebarLayout(
-                 sidebarPanel(
-                     uiOutput("sch1"),
-                     uiOutput("sch2"),
-                     h5(
-                         "The Legends are interactive. Click a money amount to remove it or double-click to isolate it."
-                     ),
-                     numericInput(
-                         inputId = "money_val1",
-                         label = "Scholarship Minimum Amount",
-                         value = 0,
-                         min = 0,
-                         max = NA,
-                         step = NA,
-                         width = NULL
-                     ),
-                     
-                     numericInput(
-                         inputId = "money_val2",
-                         label = "Scholarship Maximum Amount",
-                         value = 500000,
-                         min = 0,
-                         max = NA,
-                         step = NA,
-                         width = NULL
-                     ),
-                     width = 3
-                 ),
-                 mainPanel(
-                     plotly::plotlyOutput("schol1"),
-                     plotly::plotlyOutput("schol2"),
-                 )
-             )),
-    tabPanel("Predictor",
-             sidebarLayout(
-                 sidebarPanel(
-                     radioButtons(
-                         inputId = "predcurve1",
-                         label = "Show or Hide GPA curve",
-                         choices = c("Show" = 1, "Hide" = 0),
-                         selected = 1,
-                         inline = TRUE,
-                         width = NULL
-                     ),
-                     radioButtons(
-                         inputId = "predcurve2",
-                         label = "Show or Hide LSAT curve",
-                         choices = c("Show" = 1, "Hide" = 0),
-                         selected = 0,
-                         inline = TRUE,
-                         width = NULL
-                     ),
-                     numericInput(
-                         inputId = "lsat_in2",
-                         label = "LSAT",
-                         value = 160,
-                         min = 140,
-                         max = 180,
-                         step = 1,
-                         width = NULL
-                     ),
-                     
-                     numericInput(
-                         inputId = "gpa_in2",
-                         label = "GPA (2 decimals)",
-                         value = 3.72,
-                         min = 2,
-                         max = 4.33,
-                         step = 0.01,
-                         width = NULL
-                     ),
-                     
-                     radioButtons(
-                         inputId = "urm_in",
-                         label = "URM",
-                         choices = c("Non-URM" = 0, "URM" = 1),
-                         selected = 0,
-                         inline = TRUE,
-                         width = NULL
-                     ),
-                     radioButtons(
-                         inputId = "sent_yn2",
-                         label = "Use 'Sent' Month?",
-                         choices = c("No" = 0, "Yes" = 1),
-                         selected = 0,
-                         inline = TRUE,
-                         width = NULL
-                     ),
-                     
-                     checkboxGroupInput(
-                         inputId = "month_in",
-                         label = "Sent Month",
-                         choices = c(
-                             "September" = 9,
-                             "October" = 10,
-                             "November" = 11,
-                             "December" = 12,
-                             "January" = 1,
-                             "February" = 2,
-                             "March" = 3
+                         ,
+                         h4("_________________"),
+                         h4(strong("Import Data:")),
+                         p(
+                             "Here you may load a previously saved dataset. Select the file then click Import"
                          ),
-                         selected = c(
-                             "September" = 9,
-                             "October" = 10,
-                             "November" = 11,
-                             "December" = 12,
-                             "January" = 1,
-                             "February" = 2,
-                             "March" = 3
+                         fileInput(
+                             inputId = "dataload",
+                             label = "Browse for File",
+                             multiple = FALSE,
+                             buttonLabel = "Browse..",
+                             placeholder = "No files selected"
                          ),
-                         inline = FALSE
+                         actionButton(
+                             inputId = "loadButton",
+                             label = "Import Dataset",
+                             icon = NULL,
+                             width = NULL
+                         )
+                         ,
+                         h4("_________________"),
+                         h4(strong("Merge:")),
+                         p(
+                             "Here you may combine an imported old data set with any new data you have downloaded"
+                         ),
+                         actionButton(
+                             inputId = "mergeButton",
+                             label = "Merge",
+                             icon = NULL,
+                             width = NULL
+                         ),
+                         p("Save Currently Selected Data-View"),
+                         downloadButton(
+                             outputId = "saveMerged",
+                             label = "Save",
+                             icon = NULL,
+                             width = NULL
+                         ),
+                         width = 3
                          
                      ),
-                     tags$br(),
-                     tags$br(),
-                     tags$br(),
-                     tags$br(),
-                     tags$br(),
-                     tags$br(),
-                     tags$br(),
-                     p("Prediction Table Below..."),
-                     width = 3
-                 ),
-                 
-                 # Show a plot of the generated distribution
-                 mainPanel(
-                     uiOutput("preds"),
-                     uiOutput("predplot11"),
-                     uiOutput("predplot22"),
-                     # plotly::plotlyOutput(),
-                     # plotly::plotlyOutput("predplot2"),
-                     DT::dataTableOutput("rtable2")
-                     
-                 )
-             )),
-    tabPanel("Twitter",
-             sidebarLayout(
-                 sidebarPanel(
-                     textInput(inputId = "twitUN",
-                               label = "Enter the person's Twitter handle without the '@' symbol",
-                               placeholder = "Your Favorite Dean!"),
-                     numericInput(inputId = "num_tweets",
-                                  label = "How many tweets to download?",
-                                  min = 0,
-                                  max = 500,
-                                  value = 0),
-                     radioButtons(inputId = "rtButton",
-                                  label = "Include Retweets?",
-                                  choices = c("Yes" =1,"No"=0),
-                                  selected = 0,
-                                  inline = TRUE),                     
-                     actionButton(inputId = "tweetButton",
-                                  label = "Get Tweets"),
-                    uiOutput("twitwarn"),
-                     p(em("You are limited to query a maximum of 100,000 per day by the Twitter API.")),
-                     p(em("Each time you change a parameter, it initializes a new query and these add to your 100,000 limit.")),
-                     width = 2
-                 ),
-                 mainPanel(
-                     tabsetPanel(
+                     mainPanel(uiOutput("introtext"),
+                               uiOutput("frontpage"))
+                 )),
+        tabPanel("View Data",
+                 sidebarLayout(
+                     sidebarPanel(
+                         p(
+                             "Specify an LSAT and GPA range to adjust the data visible in the histogram."
+                         ),
+                         sliderInput(
+                             inputId = "lsat_in",
+                             label = "LSAT Range",
+                             min = 120,
+                             max = 180,
+                             value = c(160, 170),
+                             step = 1
+                         ),
+                         
+                         sliderInput(
+                             inputId = "gpa_in",
+                             label = "GPA Range",
+                             min = 2.0,
+                             max = 4.33,
+                             value = c(3.5, 4.2),
+                             step = 0.01
+                         ),
+                         radioButtons(
+                             inputId = "plots_urm",
+                             label = "URM Filter",
+                             choices = c("Don't filter" = 2,"Show only non-URM" = 0, "Show only URM" = 1),
+                             selected = 2,
+                             inline = TRUE
+                         ),
+                         radioButtons(
+                             inputId = "bar_type",
+                             label = "Histogram Bar Type",
+                             choices = c("Fill", "Stack"),
+                             selected = "Fill"
+                         ),
+                         uiOutput("side1"),
+                         uiOutput("side3"),
+                         radioButtons(
+                             inputId = "complete_yn",
+                             label = "Use Complete Dates?",
+                             choices = c("Yes", "No"),
+                             selected = "No",
+                             inline = TRUE
+                         ),
+                         
+                         dateRangeInput(
+                             inputId = "complete_d",
+                             label = "Selected Complete date range in YYYY-MM-DD Format",
+                             start = "2018-09-01",
+                             end = "2020-01-01",
+                             separator = "to"
+                         ),
+                         p(
+                             em(
+                                 "You may filter the data for the time-series plot by application 'Complete' dates to view when individuals with certain complete dates received their decisions"
+                             )
+                         ),
+                         radioButtons(
+                             inputId = "resultbin",
+                             label = "Use Simple Result Binning?",
+                             choices = c("Yes", "No"),
+                             selected = "Yes",
+                             inline = TRUE
+                         ),
+                         uiOutput("side2"),
+                         width = 3
+                         
+                         
+                     ),
+                     mainPanel(
+                         plotly::plotlyOutput("hist"),
+                         plotly::plotlyOutput("waves"),
+                         DT::dataTableOutput("temptable")
+                     )
+                 )),
+        tabPanel("Scholarships",
+                 sidebarLayout(
+                     sidebarPanel(
+                         uiOutput("sch1"),
+                         uiOutput("sch2"),
+                         h5(
+                             "The Legends are interactive. Click a money amount to remove it or double-click to isolate it."
+                         ),
+                         radioButtons(
+                             inputId = "schol_urm",
+                             label = "Isolate URM observations?",
+                             choices = c("Yes" = 1, "No" = 0),
+                             selected = 0,
+                             inline = TRUE
+                         ),
+                         numericInput(
+                             inputId = "money_val1",
+                             label = "Scholarship Minimum Amount",
+                             value = 0,
+                             min = 0,
+                             max = NA,
+                             step = NA,
+                             width = NULL
+                         ),
+                         
+                         numericInput(
+                             inputId = "money_val2",
+                             label = "Scholarship Maximum Amount",
+                             value = 500000,
+                             min = 0,
+                             max = NA,
+                             step = NA,
+                             width = NULL
+                         ),
+                         width = 3
+                     ),
+                     mainPanel(
+                         plotly::plotlyOutput("schol1"),
+                         plotly::plotlyOutput("schol2"),
+                     )
+                 )),
+        tabPanel("Predictor",
+                 sidebarLayout(
+                     sidebarPanel(
+                         radioButtons(
+                             inputId = "predcurve1",
+                             label = "Show or Hide GPA curve",
+                             choices = c("Show" = 1, "Hide" = 0),
+                             selected = 1,
+                             inline = TRUE,
+                             width = NULL
+                         ),
+                         radioButtons(
+                             inputId = "predcurve2",
+                             label = "Show or Hide LSAT curve",
+                             choices = c("Show" = 1, "Hide" = 0),
+                             selected = 0,
+                             inline = TRUE,
+                             width = NULL
+                         ),
+                         numericInput(
+                             inputId = "lsat_in2",
+                             label = "LSAT",
+                             value = 160,
+                             min = 140,
+                             max = 180,
+                             step = 1,
+                             width = NULL
+                         ),
+                         
+                         numericInput(
+                             inputId = "gpa_in2",
+                             label = "GPA (2 decimals)",
+                             value = 3.72,
+                             min = 2,
+                             max = 4.33,
+                             step = 0.01,
+                             width = NULL
+                         ),
+                         
+                         radioButtons(
+                             inputId = "urm_in",
+                             label = "URM",
+                             choices = c("Non-URM" = 0, "URM" = 1),
+                             selected = 0,
+                             inline = TRUE,
+                             width = NULL
+                         ),
+                         radioButtons(
+                             inputId = "sent_yn2",
+                             label = "Use 'Sent' Month?",
+                             choices = c("No" = 0, "Yes" = 1),
+                             selected = 0,
+                             inline = TRUE,
+                             width = NULL
+                         ),
+                         uiOutput("months"),
+                         width = 3
+                     ),
+                     mainPanel(
+                         uiOutput("preds"),
+                         uiOutput("preds_points"),
+                         uiOutput("predplot11"),
+                         uiOutput("predplot22"),
+                         DT::dataTableOutput("rtable2")
+                         
+                     )
+                 )),
+        tabPanel("Twitter",
+                 sidebarLayout(
+                     sidebarPanel(
+                         textInput(
+                             inputId = "twitUN",
+                             label = "Enter the person's Twitter handle without the '@' symbol",
+                             placeholder = "Your Favorite Dean!"
+                         ),
+                         numericInput(
+                             inputId = "num_tweets",
+                             label = "How many tweets to download?",
+                             min = 0,
+                             max = 500,
+                             value = 0
+                         ),
+                         radioButtons(
+                             inputId = "rtButton",
+                             label = "Include Retweets?",
+                             choices = c("Yes" = 1, "No" = 0),
+                             selected = 0,
+                             inline = TRUE
+                         ),
+                         actionButton(inputId = "tweetButton",
+                                      label = "Get Tweets"),
+                         uiOutput("twitwarn"),
+                         p(
+                             em(
+                                 "You are limited to query a maximum of 100,000 per day by the Twitter API."
+                             )
+                         ),
+                         p(
+                             em(
+                                 "Each time you change a parameter, it initializes a new query and these add to your 100,000 limit."
+                             )
+                         ),
+                         width = 2
+                     ),
+                     mainPanel(tabsetPanel(
                          tabPanel("Table", DT::dataTableOutput("tweet_table")),
                          tabPanel("Time Series", plotly::plotlyOutput("tweet_time_series"))
-             ))))
-))
+                     ))
+                 ))
+    )
+)
 
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
@@ -528,9 +524,9 @@ server <- function(input, output, session) {
     
     # init.count <- reactiveVal()
     # init.count(1)
-    #
-    # initdata <- readr::read_csv(file = "data-2020-04-30-T20-Cycle17.csv", col_names = TRUE)
-    #
+    # #
+    # initdata <- readr::read_csv(file = "LSDEdata-2020-05-03.csv", col_names = TRUE)
+    # #
     # observeEvent(input$loadButton,{
     # newval <- init.count()+1
     # init.count(newval)
@@ -798,35 +794,37 @@ server <- function(input, output, session) {
         return(schoolurls)
     })
     
-    # rlist3 <- c("Rejected", "Rejected, Deferred", "Rejected, Withdrawn")
-    #
-    # alist2 <- c("Accepted", "Accepted, Attending", "Accepted, Deferred", "WL, Accepted","WL, Accepted, Withdrawn","WL, Accepted, Attending", "Acceptd, Deferred, Attending", "Accepted, Deferred, Withdrawn", "Accepted, Withrdawn")
-    #
-    # wlist2 <- c("Waitlisted", "Waitlisted, Deferred", "Waitlisted, Withdrawn", "WL, Rejected", "WL, Rejected, Withdrawn",
-    #             "WL, Withdrawn")
-    
     val <- reactiveVal(1)
     
-    
-    observeEvent(input$loadButton,{
+    observeEvent(input$loadButton, {
         val(2)
-    },once = TRUE)
+    }, once = TRUE)
     
-    observeEvent(input$scrapeButton,{
+    observeEvent(input$scrapeButton, {
         val(2)
-    },once = TRUE)
+    }, once = TRUE)
     
-    output$introtext <- renderUI(if (val() == 1){
-                h4("To get started, select schools to download their data or import a previously saved dataset.")
+    output$introtext <- renderUI(if (val() == 1) {
+        h4(
+            "To get started, select schools to download their data or import a previously saved dataset."
+        )
     })
     
-    output$frontpage <- renderUI(if (!is.null(query_result())){
-    conditionalPanel(
-        condition = "'val' != 1",
-        tabsetPanel(
-            tabPanel("Data Table",uiOutput("tt2"),DT::dataTableOutput("rtable")),
-            tabPanel("Recent Decisions",uiOutput("tt1"),DT::dataTableOutput("dtable")),
-            tabPanel("Schools and Cycles", tableOutput("listtable"))))
+    output$frontpage <- renderUI(if (!is.null(query_result())) {
+        conditionalPanel(condition = "'val' != 1",
+                         tabsetPanel(
+                             tabPanel(
+                                 "Data Table",
+                                 uiOutput("tt2"),
+                                 DT::dataTableOutput("rtable")
+                             ),
+                             tabPanel(
+                                 "Recent Decisions",
+                                 uiOutput("tt1"),
+                                 DT::dataTableOutput("dtable")
+                             ),
+                             tabPanel("Schools and Cycles", tableOutput("listtable"))
+                         ))
     })
     schools <-
         eventReactive(c(input$tierSelect, input$cycleSelect, input$allSelect),
@@ -853,44 +851,18 @@ server <- function(input, output, session) {
                           rm(namecheck)
                           return(schoolurls)
                       })
-    #####
-    global <- reactiveValues(datapath = getwd())
     
-    dir <- reactive(input$dir)
-    
-    '%!in%' <- function(x, y) {
-        !('%in%'(x, y))
-    }
     observeEvent(input$scrapeButton, {
         updateRadioButtons(session, "dataselector",
                            selected = "b")
     })
-    # shinyDirChoose(
-    #     input,
-    #     'dir',
-    #     roots = c(home = '~'),
-    #     filetypes = c('', 'txt', 'bigWig', "tsv", "csv", "bw")
-    # )
-    # observeEvent(
-    #     ignoreNULL = TRUE,
-    #     eventExpr = {
-    #         input$dir
-    #     },
-    #     handlerExpr = {
-    #         req(is.list(input$dir))
-    #         home <- normalizePath("~")
-    #         global$datapath <-
-    #             file.path(home, paste(unlist(dir()$path[-1]), collapse = .Platform$file.sep))
-    #     }
-    # )
+    
     output$saveMerged <- downloadHandler(
         filename = function() {
-            paste(
-                'LSDEdata-',
-                Sys.Date(),
-                '.csv',
-                sep = ''
-            )
+            paste('LSDEdata-',
+                  Sys.Date(),
+                  '.csv',
+                  sep = '')
         },
         content = function(con) {
             dfsave <- query_result()
@@ -984,14 +956,21 @@ server <- function(input, output, session) {
                                  riley2$cycle <- paste("20-21")
                              }
                              mylist[[i]] <- riley2
-                             # write_csv(riley2, paste(schoolurls$X2[match(i, schoolurls$X1)], ".csv", sep = "") , col_names = TRUE)
                              if (i %% 2 == 0) {
                                  gc()
                                  
                              }
-                             # tval <- as.numeric(input$tierSelect)
                              tval <- length(schoolurls$X1)
-                             incProgress(amount = 1 / tval, detail = paste('Get a coffee. Gathering data may take some time...',"Completed:",i,"/",tval))
+                             incProgress(
+                                 amount = 1 / tval,
+                                 detail = paste(
+                                     'Get a coffee. Gathering data may take some time...',
+                                     "Completed:",
+                                     i,
+                                     "/",
+                                     tval
+                                 )
+                             )
                          }
                          try(Rcrawler::stop_browser(br), silent = TRUE)
                          try(Rcrawler::stop_browser(br), silent = TRUE)
@@ -1066,6 +1045,9 @@ server <- function(input, output, session) {
                      })
     })
     query_result <- reactive({
+        # if (init.count() == 1){
+        #     return(initdata)
+        # }
         if (input$dataselector == "a") {
             if (!is.null(dfLoad()) == TRUE) {
                 return(dfLoad())
@@ -1082,14 +1064,8 @@ server <- function(input, output, session) {
             }
         }
     })
-    # shinyDirChoose(
-    #     input,
-    #     'dir',
-    #     roots = c(home = '~'),
-    #     filetypes = c('', 'txt', 'bigWig', "tsv", "csv", "bw")
-    # )
+    
     dfLoad <- eventReactive(input$loadButton, {
-        # append(chat,"Loading")
         oldpath <-
             data.frame(lapply(input$dataload, as.character),
                        stringsAsFactors = FALSE)
@@ -1192,7 +1168,6 @@ server <- function(input, output, session) {
     output$listtable <- renderTable(listOutput())
     
     colortable <- reactive({
-        
         cr <- gg_color_hue(3)[1]
         ca <- gg_color_hue(3)[2]
         cw <- "khaki"
@@ -1270,7 +1245,6 @@ server <- function(input, output, session) {
         cr <- gg_color_hue(3)[1]
         ca <- gg_color_hue(3)[2]
         cw <- "khaki"
-        # cw <- gg_color_hue(3)[3]
         
         cols2 <- c(rep(cr, 3), rep(ca, 9), rep(cw, 6))
         
@@ -1392,6 +1366,18 @@ server <- function(input, output, session) {
             )
         }
     })
+    output$preds_points <- renderUI({
+        if (!is.null(query_result()) &
+            input$predcurve1 == 1 | input$predcurve2 == 1) {
+            radioButtons(
+                inputId = "show_points",
+                label = "Show or Hide Plot Points",
+                choices = c("Show" = 1, "Hide" = 0),
+                selected = 1,
+                inline =  TRUE
+            )
+        }
+    })
     output$side2 <- renderUI({
         if (!is.null(query_result()) && input$resultbin == "No") {
             r.choices1 <-
@@ -1414,6 +1400,35 @@ server <- function(input, output, session) {
         }
     })
     
+    output$months <- renderUI({
+        if (!is.null(query_result()) && input$sent_yn2 == 1) {
+            checkboxGroupInput(
+                inputId = "month_in",
+                label = "Sent Month",
+                choices = c(
+                    "September" = 9,
+                    "October" = 10,
+                    "November" = 11,
+                    "December" = 12,
+                    "January" = 1,
+                    "February" = 2,
+                    "March" = 3
+                ),
+                selected = c(
+                    "September" = 9,
+                    "October" = 10,
+                    "November" = 11,
+                    "December" = 12,
+                    "January" = 1,
+                    "February" = 2,
+                    "March" = 3
+                ),
+                inline = FALSE
+                
+            )
+        }
+    })
+    
     output$sch_in <- renderUI({
         if (input$tierSelect == 225) {
             r.choices1 <- schools2()
@@ -1432,8 +1447,6 @@ server <- function(input, output, session) {
         }
     })
     
-    
-    
     rbin <- reactive({
         paste(input$resultbin)
     })
@@ -1445,6 +1458,9 @@ server <- function(input, output, session) {
                 df.temp[df.temp$Complete >= input$complete_d[1] &
                             df.temp$Complete <= input$complete_d[2], ]
             df.temp <- df.temp[is.na(df.temp$User) == FALSE, ]
+        }
+        if (input$plots_urm == 1 | input$plots_urm == 0){
+            df.temp <- df.temp[df.temp$URM == input$plots_urm,]
         }
         df.temp <- df.temp[df.temp$School %in% input$school_in, ]
         df.temp <- df.temp[is.na(df.temp$User) == FALSE, ]
@@ -1496,91 +1512,7 @@ server <- function(input, output, session) {
     schoollist <- reactive({
         input$school_in
     })
-    #
-    # inv_cumsum <- function(x) {
-    #     sum(x) - cumsum(x) + x
-    # }
-    #
-    # StatFillLabels <- ggproto(
-    #     "StatFillLabels",
-    #     StatCount,
-    #     compute_panel = function(self, data, scales, ...) {
-    #         if (ggplot2:::empty(data)) {
-    #             return(data.frame())
-    #         }
-    #         groups <- split(data, data$group)
-    #         stats <- lapply(groups, function(group) {
-    #             self$compute_group(data = group, scales = scales, ...)
-    #         })
-    #         stats <- mapply(function(new, old) {
-    #             if (ggplot2:::empty(new)) {
-    #                 return(data.frame())
-    #             }
-    #             unique <- ggplot2:::uniquecols(old)
-    #             missing <- !(names(unique) %in% names(new))
-    #             cbind(new, unique[rep(1, nrow(new)), missing, drop = FALSE])
-    #         }, stats, groups, SIMPLIFY = FALSE)
-    #         data <- do.call(plyr::rbind.fill, stats)
-    #         plyr::ddply(
-    #             data, "x", plyr::mutate,
-    #             prop = count / sum(count),
-    #             cumprop = inv_cumsum(count) / sum(count),
-    #             ylabel = (inv_cumsum(count) - count / 2) / sum(count),
-    #             na.rm = TRUE
-    #         )
-    #     },
-    #     default_aes = aes(y = ..ylabel.., label = paste0(round(100 * ..prop.., digits = 1), "%"))
-    # )
-    #
-    # stat_fill_labels <- function(mapping = NULL, data = NULL, geom = "text",
-    #                              position = "identity", width = NULL, na.rm = FALSE, show.legend = NA,
-    #                              inherit.aes = TRUE, ...) {
-    #     layer(
-    #         stat = StatFillLabels, data = data, mapping = mapping, geom = geom,
-    #         position = position, show.legend = show.legend, inherit.aes = inherit.aes,
-    #         params = list(na.rm = na.rm, ...)
-    #     )
-    # }
-    #
-    # StatStackLabels <- ggproto(
-    #     "StatStackLabels",
-    #     StatCount,
-    #     compute_panel = function(self, data, scales, ...) {
-    #         if (ggplot2:::empty(data)) {
-    #             return(data.frame())
-    #         }
-    #         groups <- split(data, data$group)
-    #         stats <- lapply(groups, function(group) {
-    #             self$compute_group(data = group, scales = scales, ...)
-    #         })
-    #         stats <- mapply(function(new, old) {
-    #             if (ggplot2:::empty(new)) {
-    #                 return(data.frame())
-    #             }
-    #             unique <- ggplot2:::uniquecols(old)
-    #             missing <- !(names(unique) %in% names(new))
-    #             cbind(new, unique[rep(1, nrow(new)), missing, drop = FALSE])
-    #         }, stats, groups, SIMPLIFY = FALSE)
-    #         data <- do.call(plyr::rbind.fill, stats)
-    #         plyr::ddply(
-    #             data, "x", plyr::mutate,
-    #             cumcount = inv_cumsum(count),
-    #             ylabel = inv_cumsum(count) - count / 2,
-    #             na.rm = TRUE
-    #         )
-    #     },
-    #     default_aes = aes(y = ..ylabel.., label = ..count..)
-    # )
-    #
-    # stat_stack_labels <- function(mapping = NULL, data = NULL, geom = "text",
-    #                               position = "identity", width = NULL, na.rm = FALSE, show.legend = NA,
-    #                               inherit.aes = TRUE, ...) {
-    #     layer(
-    #         stat = StatStackLabels, data = data, mapping = mapping, geom = geom,
-    #         position = position, show.legend = show.legend, inherit.aes = inherit.aes,
-    #         params = list(na.rm = na.rm, ...)
-    #     )
-    # }
+    
     plot3 <- reactive({
         df.temp2 <- dfPlot()
         df.temp2 <-
@@ -1599,7 +1531,6 @@ server <- function(input, output, session) {
         cr <- gg_color_hue(3)[1]
         ca <- gg_color_hue(3)[2]
         cw <- "khaki"
-        # cw <- gg_color_hue(3)[3]
         
         cols2 <- c(cr, ca, cw)
         if (input$resultbin == "Yes") {
@@ -1608,7 +1539,7 @@ server <- function(input, output, session) {
                 ggplot2::geom_bar(colour = "black") +
                 ggplot2::facet_grid(. ~ School, scales = "free_y") +
                 ggplot2::scale_x_discrete(drop = FALSE) +
-                stat_stack_labels(color = "black") +
+                stat_stack_labels(color = "black", size = 3.5) +
                 ggplot2::scale_fill_manual(values = c(
                     "Accepted" = ca,
                     "Rejected" = cr,
@@ -1621,7 +1552,8 @@ server <- function(input, output, session) {
                 ggplot2::geom_bar(position = "fill") +
                 ggplot2::facet_grid(. ~ School) +
                 ggplot2::scale_x_discrete(drop = FALSE) +
-                stat_fill_labels() +
+                scale_y_continuous("Proportion",labels = scales::percent)+
+                stat_fill_labels(size = 3.5) +
                 ggplot2::scale_fill_manual(values = c(
                     "Accepted" = ca,
                     "Rejected" = cr,
@@ -1638,7 +1570,7 @@ server <- function(input, output, session) {
                 ggplot2::geom_bar(colour = "black") +
                 ggplot2::facet_grid(. ~ School, scales = "free_y") +
                 ggplot2::scale_x_discrete(drop = FALSE) +
-                stat_stack_labels(color = "black")
+                stat_stack_labels(color = "black", size = 3.5)
             
             p2 <-
                 ggplot2::ggplot(df.temp2, ggplot2::aes(x = LSAT,
@@ -1646,7 +1578,8 @@ server <- function(input, output, session) {
                 ggplot2::geom_bar(position = "fill") +
                 ggplot2::facet_grid(. ~ School) +
                 ggplot2::scale_x_discrete(drop = FALSE) +
-                stat_fill_labels()
+                scale_y_continuous("Proportion",labels = scales::percent)+
+                stat_fill_labels(size = 3.5)
         }
         
         if (input$bar_type == "Stack") {
@@ -1655,8 +1588,6 @@ server <- function(input, output, session) {
         if (input$bar_type == "Fill") {
             return(plotly::ggplotly(p2))
         }
-        # p3 <- p2
-        # ggplotly(p3)
     })
     output$hist <- plotly::renderPlotly({
         plot3()
@@ -1674,7 +1605,6 @@ server <- function(input, output, session) {
         cr <- gg_color_hue(3)[1]
         ca <- gg_color_hue(3)[2]
         cw <- "khaki"
-        # cw <- gg_color_hue(3)[3]
         
         cols2 <- c(cr, ca, cw)
         if (input$resultbin == "Yes") {
@@ -1682,8 +1612,7 @@ server <- function(input, output, session) {
                                   ggplot2::aes(
                                       x = Decision,
                                       y = Result,
-                                      label = as.Date(Decision)
-                                  )) +
+                                      label = as.Date(Decision))) +
                 ggplot2::geom_count(ggplot2::aes(fill = Result),
                                     color = "black",
                                     alpha = 0.7) +
@@ -1728,13 +1657,9 @@ server <- function(input, output, session) {
                 )
         }
         return(plotly::ggplotly(p1, tooltip = c("n", "label")))
-        # ggtitle("February 2020 T13 Waves")
     })
     
     output$predplot1 <- plotly::renderPlotly({
-        df_t <- query_result()
-        # if(input$predcurve1 == 1){
-        #     plotly::plotlyOutput({
         df_t <- query_result()
         school_name <- input$predschool
         df_t$Result[df_t$Result %in% c('Accepted, Withdrawn')] <-
@@ -1766,32 +1691,72 @@ server <- function(input, output, session) {
                        pr ~ GPA + LSAT,
                        family = stats::binomial(link = logit))
         
-        v1 <- visreg::visreg(
-            model,
-            "LSAT",
-            scale = "response",
-            rug = 2,
-            xlab = "LSAT Score",
-            ylab = "Pr(Accepted)",
-            type = "conditional",
-            by = "GPA",
-            breaks = c(
-                input$gpa_in2 - 0.05,
-                input$gpa_in2,
-                input$gpa_in2 + 0.05
-            ),
-            gg = TRUE
-        ) +
-            ggplot2::scale_x_continuous(limits = c(150, 180),
-                                        breaks = c(150:180))
+        v2<- visreg::visreg(model,
+                            "GPA",
+                            scale = "response",
+                            rug = 2,
+                            by = "LSAT",
+                            breaks = c(input$lsat_in2-1,input$lsat_in2,input$lsat_in2+1),
+                            plot = FALSE)
         
-
-        
-        return(plotly::ggplotly(v1+ggplot2::ggtitle(paste(school_name," - ","Pr(Accepted) by LSAT by GPA",sep = ""))))
+        if(input$show_points == 1){
+            v1 <- visreg::visreg(model,
+                                 "GPA",
+                                 scale = "response",
+                                 rug = 2,
+                                 xlab = "GPA",
+                                 ylab = "Pr(Accepted)",
+                                 type = "conditional",
+                                 by = "LSAT",
+                                 breaks = c(input$lsat_in2-1,input$lsat_in2,input$lsat_in2+1),
+                                 gg = TRUE,
+                                 fill.par=list(col="#008DFF33")) +
+                ggplot2::scale_x_continuous(limits = c(2.5, 4.33),
+                                            breaks = c(seq(2.5, 4.3, 0.1))) +
+                ggplot2::scale_y_continuous(labels = scales::percent) +
+                ggplot2::geom_point(data=v2$res, ggplot2::aes(x = GPA, y = visregRes, fill=factor(visregPos),text = purrr::map(
+                    paste(
+                        '</br>Probability:',
+                        paste(round(visregRes,3)*100,"%"),
+                        '</br>LSAT:',
+                        LSAT,
+                        '</br>GPA:',
+                        GPA,
+                        '</br>Result:',
+                        ifelse(visregPos == TRUE,paste("Accepted"),paste("Rejected"))
+                    ),
+                    HTML
+                )),color = "black",size = 3,shape = 21,alpha = 0.4)+
+                ggplot2::scale_fill_brewer(palette = "Set2", direction = -1)+
+                ggplot2::theme(legend.position = "none")
+            
+            plotly::ggplotly(v1 + ggplot2::ggtitle(
+                paste(school_name, " - ", "Pr(Accepted) by LSAT by GPA", sep = "")
+ 
+        ),tooltip = c("text","x","y"))}else{
+            v1 <- visreg::visreg(
+                model,
+                "GPA",
+                scale = "response",
+                rug = 2,
+                xlab = "GPA",
+                ylab = "Pr(Accepted)",
+                type = "conditional",
+                by = "LSAT",
+                breaks = c(input$lsat_in2 - 1, input$lsat_in2, input$lsat_in2 +
+                               1),
+                gg = TRUE
+            ) +
+                ggplot2::scale_x_continuous(limits = c(2.5, 4.33),
+                                            breaks = c(seq(2.5, 4.3, 0.1)))+
+                ggplot2::scale_y_continuous(labels = scales::percent)
+            
+            return(plotly::ggplotly(v1+ggplot2::ggtitle(paste(school_name," - ","Pr(Accepted) by GPA by LSAT",sep = ""))))
+        }
     })
     
     output$predplot11 <- renderUI({
-        if(input$predcurve1 == 1){
+        if (input$predcurve1 == 1) {
             plotly::plotlyOutput("predplot1")
         }
     })
@@ -1828,34 +1793,80 @@ server <- function(input, output, session) {
                        pr ~ GPA + LSAT,
                        family = stats::binomial(link = logit))
         
-        v1 <- visreg::visreg(
-            model,
-            "GPA",
-            scale = "response",
-            rug = 2,
-            xlab = "GPA",
-            ylab = "Pr(Accepted)",
-            type = "conditional",
-            by = "LSAT",
-            breaks = c(input$lsat_in2 - 1, input$lsat_in2, input$lsat_in2 +
-                           1),
-            gg = TRUE
-        ) +
-            ggplot2::scale_x_continuous(limits = c(2.5, 4.33),
-                                        breaks = c(seq(2.5, 4.3, 0.1)))
         
+        
+        v2<- visreg::visreg(model,
+                            "LSAT",
+                            scale = "response",
+                            rug = 2,
+                            by = "GPA",
+                            breaks = c(input$gpa_in2-0.05,input$gpa_in2,input$gpa_in2+0.05),
+                            plot = FALSE)
+        
+        if (input$show_points == 1){
+            v1 <- visreg::visreg(model,
+                                 "LSAT",
+                                 scale = "response",
+                                 rug = 2,
+                                 xlab = "GPA",
+                                 ylab = "Pr(Accepted)",
+                                 type = "conditional",
+                                 by = "GPA",
+                                 breaks = c(input$gpa_in2-0.05,input$gpa_in2,input$gpa_in2+0.05),
+                                 gg = TRUE,
+                                 fill.par=list(col="#008DFF33")) +
+                ggplot2::scale_x_continuous(limits = c(150,180),breaks = c(150:180))+
+                ggplot2::scale_y_continuous(labels = scales::percent) +
+                ggplot2::geom_point(data=v2$res, ggplot2::aes(x = LSAT, y = visregRes, fill=factor(visregPos),text = purrr::map(
+                    paste(
+                        '</br>Probability:',
+                        paste(round(visregRes,3)*100,"%"),
+                        '</br>LSAT:',
+                        LSAT,
+                        '</br>GPA:',
+                        GPA,
+                        '</br>Result:',
+                        ifelse(visregPos == TRUE,paste("Accepted"),paste("Rejected"))
+                    ),
+                    HTML
+                )),color = "black",size = 3,shape = 21,alpha = 0.4)+
+                ggplot2::scale_fill_brewer(palette = "Set2", direction = -1)+
+                ggplot2::theme(legend.position = "none")
+            
+            plotly::ggplotly(v1 + ggplot2::ggtitle(
+                paste(school_name, " - ", "Pr(Accepted) by GPA by LSAT", sep = "")
 
+        ),c("text","x","y"))}else{
+            v1 <- visreg::visreg(
+                model,
+                "LSAT",
+                scale = "response",
+                rug = 2,
+                xlab = "LSAT Score",
+                ylab = "Pr(Accepted)",
+                type = "conditional",
+                by = "GPA",
+                breaks = c(
+                    input$gpa_in2 - 0.05,
+                    input$gpa_in2,
+                    input$gpa_in2 + 0.05
+                ),
+                gg = TRUE
+            ) +
+                ggplot2::scale_x_continuous(limits = c(150, 180),
+                                            breaks = c(150:180))+
+                ggplot2::scale_y_continuous(labels = scales::percent)
+            
+            return(plotly::ggplotly(v1+ggplot2::ggtitle(paste(school_name," - ","Pr(Accepted) by LSAT by GPA",sep = ""))))
+        }
         
-        return(plotly::ggplotly(v1+ggplot2::ggtitle(paste(school_name," - ","Pr(Accepted) by GPA by LSAT",sep = ""))))
     })
     
     output$predplot22 <- renderUI({
-        if(input$predcurve2 == 1){
+        if (input$predcurve2 == 1) {
             plotly::plotlyOutput("predplot2")
         }
     })
-    
-    
     
     query_result2 <-  reactive({
         df5 <- query_result()
@@ -1994,11 +2005,6 @@ server <- function(input, output, session) {
             )
         colnames(dffr) <- CN
         
-        
-        
-        
-        
-        
         dffr <-
             DT::datatable(
                 dffr,
@@ -2022,12 +2028,6 @@ server <- function(input, output, session) {
                 backgroundPosition = 'center'
             )
         dffr
-        
-        # return(datatable(dfPlot(),options = list(order=list(14,'desc')),rownames = FALSE)%>% formatStyle(
-        #     "Result",
-        #     target = "row",
-        #     backgroundColor = styleEqual(c(rlist,alist,wlist),cols2))%>% formatStyle(columns = c(1:ncol(query_result())),fontSize = '85%'))
-        #
     })
     
     
@@ -2073,23 +2073,14 @@ server <- function(input, output, session) {
                            selected = "c")
     })
     
-    
-    # posn.j <- position_jitter(width = 0.1,height = 0.01)
-    # posn.j <- position_jitter(width = 0.2,height = 0.05)
-    #
-    # png(file="JS5.png", width=2200, height=1300, res=160)
-    # ggplot(df10, aes(x = lsat, y = gpa, color = factor(result)))+
-    #     geom_point(size = 5, alpha = 0.3, position = posn.j)+
-    #     scale_color_manual(values = c(mycols[1],mycols[2],mycols[3],mycols[4]))+
-    #     scale_x_continuous(limits = c(160,180), breaks = c(162:180))+
-    #     scale_y_continuous(limits = c(3.55,4.21), breaks = b1)+
-    #     theme(panel.grid.major = element_line(size = 0.5, linetype = 'solid', colour = "darkgrey"))
-    # dev.off()
     output$schol1 <- plotly::renderPlotly({
         df1 <- query_result()
         posn.j <-
             ggplot2::position_jitter(width = 0.2, height = 0.05)
         df1 <- df1[df1$School %in% input$school1, ]
+        if (input$schol_urm == 1){
+            df1 <- df1[df1$URM == 1,]
+        }
         df1 <- df1[df1$Money != 0, ]
         df1 <- df1[is.na(df1$Money) == FALSE, ]
         df1 <- df1[df1$Money >= as.numeric(input$money_val1), ]
@@ -2101,13 +2092,24 @@ server <- function(input, output, session) {
         b1 <- seq(gmin, gmax, 0.05)
         df1$Money <- as.factor(df1$Money)
         df1$LSAT <- as.factor(df1$LSAT)
-        p1 <- ggplot2::ggplot(df1, ggplot2::aes(
-            x = LSAT,
-            y = GPA,
-            label = User
-        )) +
+        p1 <- ggplot2::ggplot(df1, ggplot2::aes(x = LSAT,
+                                                y = GPA)) +
             ggplot2::geom_point(
-                ggplot2::aes(fill = Money),
+                ggplot2::aes(fill = Money, text = purrr::map(
+                    paste(
+                        '</br>User:',
+                        User,
+                        '</br>LSAT:',
+                        LSAT,
+                        '</br>GPA:',
+                        GPA,
+                        '</br>Money:',
+                        Money,
+                        '</br>URM:',
+                        URM
+                    ),
+                    HTML
+                )),
                 color = "black",
                 size = 2.4,
                 alpha = 0.7,
@@ -2117,11 +2119,8 @@ server <- function(input, output, session) {
                                         limits = c(gmin, gmax),
                                         breaks = b1) +
             ggplot2::scale_x_discrete("LSAT") +
-            ggplot2::geom_text(ggplot2::aes(label = User),
-                               color = "white",
-                               nudge_y = -100) +
             ggplot2::ggtitle(paste(df1$School))
-        return(plotly::ggplotly(p1))
+        return(plotly::ggplotly(p1, tooltip = 'text'))
     })
     
     output$schol2 <- plotly::renderPlotly({
@@ -2129,6 +2128,9 @@ server <- function(input, output, session) {
         posn.j <-
             ggplot2::position_jitter(width = 0.2, height = 0.05)
         df1 <- df1[df1$School %in% input$school2, ]
+        if (input$schol_urm == 1){
+            df1 <- df1[df1$URM == 1,]
+        }
         df1 <- df1[df1$Money != 0, ]
         df1 <- df1[is.na(df1$Money) == FALSE, ]
         df1 <- df1[df1$Money >= as.numeric(input$money_val1), ]
@@ -2140,14 +2142,25 @@ server <- function(input, output, session) {
         b1 <- seq(gmin, gmax, 0.05)
         df1$Money <- as.factor(df1$Money)
         df1$LSAT <- as.factor(df1$LSAT)
-        p1 <- ggplot2::ggplot(df1, ggplot2::aes(
-            x = LSAT,
-            y = GPA,
-            label = User
-        )) +
+        p1 <- ggplot2::ggplot(df1, ggplot2::aes(x = LSAT,
+                                                y = GPA)) +
             ggplot2::geom_point(
-                ggplot2::aes(fill = Money),
-                color = "grey2",
+                ggplot2::aes(fill = Money, text = purrr::map(
+                    paste(
+                        '</br>User:',
+                        User,
+                        '</br>LSAT:',
+                        LSAT,
+                        '</br>GPA:',
+                        GPA,
+                        '</br>Money:',
+                        Money,
+                        '</br>URM:',
+                        URM
+                    ),
+                    HTML
+                )),
+                color = "black",
                 size = 2.4,
                 alpha = 0.7,
                 position = posn.j
@@ -2156,26 +2169,31 @@ server <- function(input, output, session) {
                                         limits = c(gmin, gmax),
                                         breaks = b1) +
             ggplot2::scale_x_discrete("LSAT") +
-            ggplot2::geom_text(ggplot2::aes(label = User),
-                               color = "white",
-                               nudge_y = -100) +
             ggplot2::ggtitle(paste(df1$School))
-        return(plotly::ggplotly(p1, tooltip = "all"))
+        return(plotly::ggplotly(p1, tooltip = 'text'))
     })
     
     val2 <- reactiveVal(0)
     
-    observeEvent(input$tweetButton,{
+    observeEvent(input$tweetButton, {
         val2(1)
-    },once = TRUE)
+    }, once = TRUE)
     
-    output$twitwarn <- renderUI(if(val2() != 1){
-        p(em(strong("You will be prompted to sign in to Twitter. The Twitter API cannot be accessed without logging in with an account. Your login information is NOT handled by this application. You sign directly into Twitter via their API login in your browser.")))  
+    output$twitwarn <- renderUI(if (val2() != 1) {
+        p(em(
+            strong(
+                "You will be prompted to sign in to Twitter. The Twitter API cannot be accessed without logging in with an account. Your login information is NOT handled by this application. You sign directly into Twitter via their API login in your browser."
+            )
+        ))
     })
     
-    tweet_df <- eventReactive(input$tweetButton,{
-        
-        temp <- rtweet::get_timeline(user = input$twitUN, n = input$num_tweets, include_rts = TRUE)
+    tweet_df <- eventReactive(input$tweetButton, {
+        temp <-
+            rtweet::get_timeline(
+                user = input$twitUN,
+                n = input$num_tweets,
+                include_rts = TRUE
+            )
         # temp <- rtweet::get_timeline(user = "elonmusk", n = 50, include_rts = TRUE)
         # temp <- temp[,c("created_at", "screen_name","text","reply_to_screen_name","is_retweet","hashtags","mentions_screen_name", "urls_expanded_url")]
         # colnames(temp) <- c("Created", "User Name", "Tweet Text","Reply to User","Is Retweet","Hashtags","User Mentions", "URLs")
@@ -2193,26 +2211,33 @@ server <- function(input, output, session) {
     #         select(DateTime = created_at, User = screen_name, Tweet, Likes = favorite_count, RTs = retweet_count, URLs)
     # })
     
-    output$tweet_table <- DT::renderDataTable(DT::datatable(tweet_df()))
+    output$tweet_table <-
+        DT::renderDataTable(DT::datatable(tweet_df()))
     
     output$tweet_time_series <- plotly::renderPlotly({
         temp <- tweet_df()
-        temp <- rtweet::ts_plot(temp,"days")
-        temp <- data.frame(x = temp[["data"]][["time"]],y = temp[["data"]][["n"]])
-        p1 <- ggplot2::ggplot(temp,ggplot2::aes(x = x, y = y))+
-            ggplot2::geom_area(fill="#69b3a2", alpha=0.5) +
-            geom_point(shape=21, color="black", fill="#69b3a2", size=3) +
-            ggplot2::geom_line(color="#69b3a2") +
+        temp <- rtweet::ts_plot(temp, "days")
+        temp <-
+            data.frame(x = temp[["data"]][["time"]], y = temp[["data"]][["n"]])
+        p1 <- ggplot2::ggplot(temp, ggplot2::aes(x = x, y = y)) +
+            ggplot2::geom_area(fill = "#69b3a2", alpha = 0.5) +
+            geom_point(
+                shape = 21,
+                color = "black",
+                fill = "#69b3a2",
+                size = 3
+            ) +
+            ggplot2::geom_line(color = "#69b3a2") +
             ggplot2::ylab("Tweets") +
             ggplot2::xlab("Time") +
             ggplot2::theme_minimal()
-    
+        
         # p1 <- plotly::plot_ly(x = temp$x, y = temp$y, type = 'scatter', mode = 'lines', fill = "tozeroy")
         # p1 <- plotly::add_trace(p1, x = temp$x, y = temp$y, type="scatter", mode="markers", fill = "tonexty")
         
         return(p1)
         
-    # plotly::ggplotly(p1)
+        # plotly::ggplotly(p1)
     })
 }
 # Run the application
