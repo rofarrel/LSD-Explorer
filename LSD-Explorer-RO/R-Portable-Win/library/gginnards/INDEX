@@ -1,0 +1,11 @@
+delete_layers           Layer manipulation.
+drop_vars               Explore and manipulate the embedded data.
+geom_debug              Geom which prints input data to console.
+geom_null               A null geom or 'no-op' geom.
+gginnards-package       gginnards: Explore the Innards of 'ggplot2'
+                        Objects
+stat_debug_group        Print to console data received by the compute
+                        group function.
+stat_debug_panel        Print to console data received by the compute
+                        panel function.
+str                     Show the structure of a ggplot object.
