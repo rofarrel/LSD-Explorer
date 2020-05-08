@@ -1,7 +1,7 @@
 # LSD-Explorer-v1.6 (Windows Only)
 ### Last Update: May 8, 2020
 ```diff
-@@  1.5 Changelog:  @@
+@@  1.6 Changelog:  @@
       * Twitter functionality disabled
       * Added Show/Hide functionality to prediction curves
       * Improved hover data for 'View Data' plots
