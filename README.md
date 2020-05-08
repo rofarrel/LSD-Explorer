@@ -30,7 +30,9 @@ Check the releases for updates and changes here https://github.com/rofarrel/LSD-
 
 3. Run the "LSD-Explorer by Riley O'Farrell" application in the LSD-Explorer-RO folder.
 
-4. **Click "View" then "Reload" if only a white page appears**. The first time you scrape for data online, you will be prompted to allow PhantomJS to access the internet. This is the headless browser the scrape function uses to simulate webpages.
+4. **Click "View" then "Reload" if only a white page appears**. 
+
+5. **Notice**: The first time you scrape for data online, you will be prompted to allow PhantomJS to access the internet. This is only a headless browser, which the scrape function uses to simulate webpages. It is safe and the full code of the app is available in the Resources folder if you wish to view how it is used.
 
 ### **Notes**
 
