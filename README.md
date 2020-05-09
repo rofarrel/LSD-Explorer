@@ -15,7 +15,7 @@
 ## If you are from a law school, please visit https://rofarrel.shinyapps.io/LSD-Explorer-v-1-4/ for a web version of the app.
 ```diff
 ! Enter my LSAC ID as the username and password for access.
-! This is only implemented for the web version to prevent public visitors from using server resources.
+! This secure login is only implemented for the web version to prevent public visitors from using server resources.
 ```
 Check the releases for updates and changes here https://github.com/rofarrel/LSD-Explorer/releases
 
