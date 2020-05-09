@@ -17,7 +17,7 @@
 ! Enter my LSAC ID as the username and password for access.
 ! This secure login is only implemented for the web version to prevent public visitors from using server resources.
 ```
-Check the releases for updates and changes here https://github.com/rofarrel/LSD-Explorer/releases
+I have a youtube video showing how the app works here: https://www.youtube.com/watch?v=GRMn8NR45c4
 
 ### **How to Use**
 
