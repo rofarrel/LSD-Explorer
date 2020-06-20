@@ -1,5 +1,5 @@
 # LSD-Explorer-v1.6 (Windows Only)
-### Last Update: May 8, 2020
+### Last Update: June 19, 2020
 ```diff
 @@  1.6.0 Changelog:  @@
       * Twitter functionality disabled
