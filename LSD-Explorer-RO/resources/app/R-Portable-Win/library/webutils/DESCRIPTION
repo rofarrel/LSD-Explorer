@@ -18,5 +18,5 @@ NeedsCompilation: yes
 Packaged: 2020-04-28 20:22:33 UTC; jeroen
 Repository: CRAN
 Date/Publication: 2020-04-28 21:00:02 UTC
-Built: R 3.6.3; x86_64-w64-mingw32; 2020-05-04 22:39:15 UTC; windows
+Built: R 3.6.3; x86_64-w64-mingw32; 2020-07-23 12:33:27 UTC; windows
 Archs: i386, x64

@@ -1,4 +1,4 @@
-ef571311ef4e9a94a34c0f482d3a81b9 *DESCRIPTION
+874639585d7285b519b765caf6964316 *DESCRIPTION
 926da26e1497c41bdf835f7c13404179 *INDEX
 0abb006899e3a2a8f4b5ad2d69ce3f9c *Meta/Rd.rds
 1642ab75f6c28233e2b73305804dd7ec *Meta/data.rds
@@ -6,7 +6,7 @@ ef571311ef4e9a94a34c0f482d3a81b9 *DESCRIPTION
 49b279b470eaed2b7cd92c0c1a6454a4 *Meta/hsearch.rds
 4763f751b322da3324fbed805626c820 *Meta/links.rds
 9da3e22e18153164e7a15cefba7f4339 *Meta/nsInfo.rds
-48cd4469490ec61cbda5483108e81904 *Meta/package.rds
+ae51b4c1eeecac8638301cf176b59753 *Meta/package.rds
 8a2c275812d47e566bd96ded2574d6fc *NAMESPACE
 89192814a35f530eaae1a0ceb098b7d1 *NEWS.md
 ebf0fc819595d631b8bf280c4b049940 *R/splitstackshape
@@ -17,8 +17,8 @@ ebf0fc819595d631b8bf280c4b049940 *R/splitstackshape
 fa3b78a50638da1611acde08f7e68f9c *data/Rdata.rdx
 64b2506ede38dbfb2dd8e47c0e3eb5b2 *help/AnIndex
 13c4391aa25c0d6680985301a6ee1728 *help/aliases.rds
-43e4c5adcb92b007d0bdd095fd517e8d *help/paths.rds
-4016b16bd09e2592382f2949eb6f840f *help/splitstackshape.rdb
-b35b7c8d232a48b53a6c708e9bd90150 *help/splitstackshape.rdx
+f857bf769eddbb026d9266d9f4ab9b8d *help/paths.rds
+9f1ca10c7161e056a74b8fa454141940 *help/splitstackshape.rdb
+ad7dd1d1ae79ae904946b1dbe297ba17 *help/splitstackshape.rdx
 c4c8aab443b2d45b4b94be2abdce539a *html/00Index.html
 b6763e6916890c631fdc3f2643803b1a *html/R.css

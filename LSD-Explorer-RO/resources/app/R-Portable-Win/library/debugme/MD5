@@ -1,4 +1,4 @@
-fc993a9142763602734549e8f4a62dcc *DESCRIPTION
+b57eb0444c6c24bac454b52eab8d416f *DESCRIPTION
 8213bd3175503e74fb3e7a40ed5bff6c *INDEX
 f0dd3528074774b794a3c0b12f258b92 *LICENSE
 9c80ad7bf063f485798f0d6bf8e2677c *Meta/Rd.rds
@@ -6,7 +6,7 @@ f0dd3528074774b794a3c0b12f258b92 *LICENSE
 f480f4b4e11c1cde83f0f68fa14f666b *Meta/hsearch.rds
 087f60f7d2cbf355f5c0fc6dc2b8a2c5 *Meta/links.rds
 850a8fa872f848463f5408a562bc43ab *Meta/nsInfo.rds
-9aab4e5b7b6b4fb5b22eefb1e9c72fea *Meta/package.rds
+3484a27efebf882f39071549366c701f *Meta/package.rds
 45c3e95a9016ef5064d97454a6d57279 *NAMESPACE
 2f63e376bebcf4b64cf1dd88aa8ecb0d *NEWS.md
 ebf0fc819595d631b8bf280c4b049940 *R/debugme
@@ -16,9 +16,9 @@ e2cd8191fc1f865716537b0cceaaa302 *R/debugme.rdb
 5ce42d048ac292df4ae6445393dd0995 *README.markdown
 9f946cf65e301a7cd8b7d85888b65b5a *help/AnIndex
 13e996085df543ac702ae58ef831fe37 *help/aliases.rds
-50a4c68e0a0c231e25183806c1d97896 *help/debugme.rdb
-9f3ed1c8b815704b64420e1ae1f68417 *help/debugme.rdx
-8fede5b64cee9dcf8502755aea0ab416 *help/paths.rds
+bbe8581e1384d05e34f6866d0466e0ff *help/debugme.rdb
+bf91ede338b0774aeb3eb9d884bbb394 *help/debugme.rdx
+3fea57d463ef2103d9dd4b143290dcfb *help/paths.rds
 217930fa7c1f6ab552dff5c1cbc7665f *html/00Index.html
 b6763e6916890c631fdc3f2643803b1a *html/R.css
 84e3136206e00aafe66899bf1dd46afa *screencast.gif

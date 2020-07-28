@@ -1,5 +1,5 @@
 679d982c380ed91ec9a2e57ae7e91ec2 *CITATION
-86dcdb79456e9a05f739e5fc61e7316a *DESCRIPTION
+d61049af4efbc9e189c2468603f17083 *DESCRIPTION
 4cdbc2b701883ce971516a48df44e4e4 *INDEX
 ef24ec38e3f249b6a0a65b68a361d9de *LICENSE
 ecb5f62f872238e5600650b74c7a295f *Meta/Rd.rds
@@ -8,7 +8,7 @@ ecb5f62f872238e5600650b74c7a295f *Meta/Rd.rds
 37bddcfa369a82262a2d976e30a2b775 *Meta/hsearch.rds
 2940c482674fa35a1971810833e03e52 *Meta/links.rds
 99a4e2dd16a4e9eacc215b95a575406f *Meta/nsInfo.rds
-701c9939a8ff81318ba4a4e70aa5bf1b *Meta/package.rds
+81e6b3a3bb10ab3a2e3f7a8b6cf45f87 *Meta/package.rds
 efa02e75c25e7bde6e492cfde2ef13d8 *Meta/vignette.rds
 3232b80674e9bb2da4fe8b2787f73a12 *NAMESPACE
 d5baf82cb218c65f6e336a30431a890a *NEWS.md
@@ -39,8 +39,8 @@ e2ccc2599e4a02751a8f6ad1421956aa *doc/stream.html
 2555c28f3fdc01ee9b35138d8db0144a *help/AnIndex
 8d225f48459ec283a388233371ae3d4b *help/aliases.rds
 e1cebbd6068beeb03996632d34dfcbb2 *help/figures/logo.png
-e0a128fed1a1ae6f4be23a8c98123b49 *help/paths.rds
-b555cc0eb598c865bb5f9fa337e0f48c *help/rtweet.rdb
-a33b58fbba37b154fe2df372285a38c2 *help/rtweet.rdx
+40f734ec92d926a9825e88dc82fbe52f *help/paths.rds
+6542cf893d002334e55459cabe8f1e3e *help/rtweet.rdb
+9b2c1edc199e4983eee7b3ee7d6d8dbf *help/rtweet.rdx
 8ff4bb5fd726f1617679bfad7b272cd5 *html/00Index.html
 b6763e6916890c631fdc3f2643803b1a *html/R.css

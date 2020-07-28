@@ -1,16 +1,24 @@
-## ----setup, include = FALSE----------------------------------------------
+## ----setup, include = FALSE---------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 
-## ---- eval = FALSE-------------------------------------------------------
+## ---- eval = FALSE------------------------------------------------------------
 #  ws <- WebSocket$new("ws://echo.websocket.org/")
 
-## ---- eval = FALSE-------------------------------------------------------
+## ---- eval = FALSE------------------------------------------------------------
 #  ws <- WebSocket$new("ws://echo.websocket.org/", autoConnect = FALSE)
+#  # Set up callbacks here...
+#  ws$connect()
 
-## ---- eval = FALSE-------------------------------------------------------
+## ---- eval = FALSE------------------------------------------------------------
+#  {
+#    ws <- WebSocket$new("ws://echo.websocket.org/")
+#    ws$onOpen(function(event) { message("websocket opened") })
+#  }
+
+## ---- eval = FALSE------------------------------------------------------------
 #  {
 #    ws <- WebSocket$new("ws://echo.websocket.org/")
 #    ws$onOpen(function(event) {
@@ -18,7 +26,7 @@ knitr::opts_chunk$set(
 #    })
 #  }
 
-## ---- eval = FALSE-------------------------------------------------------
+## ---- eval = FALSE------------------------------------------------------------
 #  {
 #    ws <- WebSocket$new("ws://echo.websocket.org/")
 #    removeThis <- ws$onMessage(function(event) {

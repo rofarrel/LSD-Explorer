@@ -30,8 +30,7 @@ if (is.null(suppressMessages(webshot:::find_phantom()))) {
 }
 # library(graph)
 # install_github("larmarange/JLutils", lib = )
-# gginnards,rtweet,selectr,debugme,showimage,curl,webutils,knitr,ps,processx,callr,iterators,generics,farver,foreach,tidyr,httr,htmlwidgets,webshot,webdriver,doParallel,cellranger,withr,hms,tidyselect,vctrs,data.table,plyr,plotly,scales,splitstackshape,readr,shiny,readxl,Rcrawler,xml2,shinyFiles,lubridate,formattable,DT,visreg,htmltools,rlang,httpuv,later,promises,retry,websocket,fastmap,crayon,digest,xtable,jsonlite,mime,pillar,lifecycle,shinyjs,shinythemes
-
+# rtweet,selectr,debugme,showimage,curl,webutils,knitr,ps,processx,callr,iterators,generics,farver,foreach,tidyr,httr,htmlwidgets,webshot,webdriver,doParallel,cellranger,withr,hms,tidyselect,vctrs,data.table,plyr,plotly,scales,splitstackshape,readr,shiny,readxl,Rcrawler,xml2,shinyFiles,lubridate,formattable,DT,visreg,htmltools,rlang,httpuv,later,promises,retry,websocket,fastmap,crayon,digest,xtable,jsonlite,mime,pillar,lifecycle,shinyjs,shinythemes
 
 
 
@@ -251,7 +250,7 @@ ui <- shiny::tagList(
                                  "T20" = 20,
                                  "Custom Selection" = 225
                              ),
-                             selected = "T14",
+                             selected = 225,
                              multiple = FALSE
                          ),
                          uiOutput("sch_in"),
@@ -308,99 +307,122 @@ ui <- shiny::tagList(
                          uiOutput("frontpage")
                      )
                  )),
-        tabPanel("View Data",
-                 sidebarLayout(
-                     sidebarPanel(
-                         p(
-                             "Specify an LSAT and GPA range to adjust the data visible in the histogram."
-                         ),
-                         sliderInput(
-                             inputId = "lsat_in",
-                             label = "LSAT Range",
-                             min = 120,
-                             max = 180,
-                             value = c(160, 170),
-                             step = 1
-                         ),
-                         
-                         sliderInput(
-                             inputId = "gpa_in",
-                             label = "GPA Range",
-                             min = 2.0,
-                             max = 4.33,
-                             value = c(3.5, 4.2),
-                             step = 0.01
-                         ),
-                         radioButtons(
-                             inputId = "plots_urm",
-                             label = "URM Filter",
-                             choices = c(
-                                 "Don't filter" = 2,
-                                 "Show only non-URM" = 0,
-                                 "Show only URM" = 1
-                             ),
-                             selected = 2,
-                             inline = TRUE
-                         ),
-                         radioButtons(
-                             inputId = "bar_type",
-                             label = "Histogram Bar Type",
-                             choices = c("Fill", "Stack"),
-                             selected = "Fill"
-                         ),
-                         uiOutput("side1"),
-                         uiOutput("side3"),
-                         radioButtons(
-                             inputId = "complete_yn",
-                             label = "Use Complete Dates?",
-                             choices = c("Yes", "No"),
-                             selected = "No",
-                             inline = TRUE
-                         ),
-                         
-                         dateRangeInput(
-                             inputId = "complete_d",
-                             label = "Selected Complete date range in YYYY-MM-DD Format",
-                             start = "2018-09-01",
-                             end = "2020-01-01",
-                             separator = "to"
-                         ),
-                         p(
-                             em(
-                                 "You may filter the data for the time-series plot by application 'Complete' dates to view when individuals with certain complete dates received their decisions"
-                             )
-                         ),
-                         radioButtons(
-                             inputId = "resultbin",
-                             label = "Use Simple Result Binning?",
-                             choices = c("Yes", "No"),
-                             selected = "Yes",
-                             inline = TRUE
-                         ),
-                         uiOutput("side2"),
-                         width = 3
-                         
-                         
-                     ),
-                     mainPanel(
-                         tabsetPanel(
-                         tabPanel(
-                             "Overview",
-                             plotly::plotlyOutput("hist"),
-                             plotly::plotlyOutput("waves"),
-                             DT::dataTableOutput("temptable")
-                         ),
-                         tabPanel(
-                             "User Stats",
-                             plotly::plotlyOutput("user_graph"),
-                             DT::dataTableOutput("temptable3")
-                         )))
-                 ,fluid = TRUE)),
+        tabPanel(
+            "View Data",
+            sidebarLayout(
+                sidebarPanel(
+                    p(
+                        "Specify an LSAT and GPA range to adjust the data visible in the histogram."
+                    ),
+                    sliderInput(
+                        inputId = "lsat_in",
+                        label = "LSAT Range",
+                        min = 120,
+                        max = 180,
+                        value = c(160, 170),
+                        step = 1
+                    ),
+                    
+                    sliderInput(
+                        inputId = "gpa_in",
+                        label = "GPA Range",
+                        min = 2.0,
+                        max = 4.33,
+                        value = c(3.5, 4.2),
+                        step = 0.01
+                    ),
+                    radioButtons(
+                        inputId = "plots_urm",
+                        label = "URM Filter",
+                        choices = c(
+                            "Don't filter" = 2,
+                            "Show only non-URM" = 0,
+                            "Show only URM" = 1
+                        ),
+                        selected = 2,
+                        inline = TRUE
+                    ),
+                    radioButtons(
+                        inputId = "bar_type",
+                        label = "Histogram Bar Type",
+                        choices = c("Fill", "Stack"),
+                        selected = "Fill"
+                    ),
+                    uiOutput("side1"),
+                    uiOutput("side3"),
+                    radioButtons(
+                        inputId = "complete_yn",
+                        label = "Use Complete Dates?",
+                        choices = c("Yes", "No"),
+                        selected = "No",
+                        inline = TRUE
+                    ),
+                    
+                    dateRangeInput(
+                        inputId = "complete_d",
+                        label = "Selected Complete date range in YYYY-MM-DD Format",
+                        start = "2018-09-01",
+                        end = "2020-01-01",
+                        separator = "to"
+                    ),
+                    p(
+                        em(
+                            "You may filter the data for the time-series plot by application 'Complete' dates to view when individuals with certain complete dates received their decisions"
+                        )
+                    ),
+                    radioButtons(
+                        inputId = "resultbin",
+                        label = "Use Simple Result Binning?",
+                        choices = c("Yes", "No"),
+                        selected = "Yes",
+                        inline = TRUE
+                    ),
+                    uiOutput("side2"),
+                    width = 3
+                    
+                    
+                ),
+                mainPanel(
+                    h4(
+                        id = "temptitle",
+                        "There are sub-panels below this text. Click this message to dismiss it."
+                    ),
+                    tabsetPanel(
+                        tabPanel(
+                            "Overview",
+                            plotly::plotlyOutput("hist"),
+                            plotly::plotlyOutput("waves"),
+                            DT::dataTableOutput("temptable")
+                        ),
+                        tabPanel(
+                            "User Stats",
+                            plotly::plotlyOutput("user_graph"),
+                            DT::dataTableOutput("temptable3")
+                        ),
+                        tabPanel(
+                            "User Search",
+                            textInput(
+                                inputId = "user_search",
+                                label = "Enter Username",
+                                value = "",
+                                placeholder = "Exact-UserName"
+                            ),
+                            actionButton(inputId = "user_get",
+                                         label = "Search"),
+                            DT::dataTableOutput("user_table2")
+                        )
+                    )
+                )
+                ,
+                fluid = TRUE
+            )
+        ),
         tabPanel("Scholarships",
                  sidebarLayout(
                      sidebarPanel(
                          uiOutput("sch1"),
                          uiOutput("sch2"),
+                         uiOutput("schol_cycles_ui"),
                          h5(
                              "The Legends are interactive. Click a money amount to remove it or double-click to isolate it."
                          ),
@@ -564,15 +586,24 @@ ui <- shiny::tagList(
 server <- function(input, output, session) {
     # result_auth <-
     #     shinymanager::secure_server(check_credentials = shinymanager::check_credentials(credentials))
-    # 
+    #
     # output$res_auth <- renderPrint({
     #     reactiveValuesToList(result_auth)
     # })
-    ##
+    #
+    # shinyjs::delay(2000,showNotification("There are 5 tabs to browse through at the top of the page. You are on the Data Management tab. Select other tabs to explore new features.",
+    #                                      duration = NULL, closeButton = TRUE, type = "default"))
+    # #####
+    # # xxchange <- reactive({
+    # #     paste(input$tierSelect , input$cycleSelect)
+    # # })
+    #
     # init.count <- reactiveVal()
     # init.count(1)
+    # #
     # initdata <-
-    #     readr::read_csv(file = "LSDEdata-2020-05-04.csv", col_names = TRUE)
+    #     readr::read_csv(file = "LSDEdata-2020-06-06 - T14 all 3 cycles.csv", col_names = TRUE)
+    # #
     # observeEvent(input$loadButton, {
     #     newval <- init.count() + 1
     #     init.count(newval)
@@ -581,7 +612,6 @@ server <- function(input, output, session) {
     #     newval <- init.count() + 1
     #     init.count(newval)
     # })
-    ##
     schools2 <- reactive({
         b1 <-
             c(
@@ -843,6 +873,9 @@ server <- function(input, output, session) {
     
     val <- reactiveVal(1)
     
+    shinyjs::onclick(id = "temptitle", expr = shinyjs::toggle("temptitle"))
+    shinyjs::disable(id = "tweetButton")
+    
     observeEvent(input$loadButton, {
         val(2)
     }, once = TRUE)
@@ -856,9 +889,9 @@ server <- function(input, output, session) {
             "To get started, select schools to download their data or import a previously saved dataset."
         )
     })
-    output$introtext2 <- renderUI(if (val() == 1) {
-        p(em("Preloaded data last updated May 4, 2020"))
-    })
+    # output$introtext2 <- renderUI(if (val() == 1) {
+    #     p(em("Preloaded data last updated June 6, 2020"))
+    # })
     
     output$frontpage <- renderUI(if (!is.null(query_result())) {
         conditionalPanel(condition = "'val' != 1",
@@ -1202,9 +1235,78 @@ server <- function(input, output, session) {
         )
     })
     
+    user_find <- eventReactive(input$user_get, {
+        tolower(input$user_search)
+    })
+    
+    user_table <- reactive({
+        cols <- c(gg_color_hue(3)[1:2], "khaki")
+        
+        cr <- gg_color_hue(3)[1]
+        ca <- gg_color_hue(3)[2]
+        cw <- "khaki"
+        
+        cols2 <- c(rep(cr, 3), rep(ca, 9), rep(cw, 6))
+        
+        alist <-
+            c(
+                "Accepted",
+                "Accepted, Attending",
+                "Accepted, Deferred",
+                "WL, Accepted",
+                "WL, Accepted, Withdrawn",
+                "WL, Accepted, Attending",
+                "Acceptd, Deferred, Attending",
+                "Accepted, Deferred, Withdrawn",
+                "Accepted, Withdrawn"
+            )
+        rlist <-
+            c("Rejected",
+              "Rejected, Deferred",
+              "Rejected, Withdrawn")
+        wlist <-
+            c(
+                "Waitlisted",
+                "Waitlisted, Deferred",
+                "Waitlisted, Withdrawn",
+                "WL, Rejected",
+                "WL, Rejected, Withdrawn",
+                "WL, Withdrawn"
+            )
+        userdf <- query_result()
+        userdf$User <- tolower(userdf$User)
+        userdf <- userdf[userdf$User == user_find(),]
+        return(
+            DT::datatable(
+                userdf,
+                options = list(order = list(14, 'desc')),
+                rownames = FALSE
+            ) %>% DT::formatStyle(
+                "Result",
+                target = "row",
+                backgroundColor = DT::styleEqual(c(rlist, alist, wlist), cols2)
+            ) %>% DT::formatStyle(columns = c(1:ncol(
+                query_result()
+            )), fontSize = '85%')
+        )
+    })
+    
     output$temptable <-
         DT::renderDataTable(
             colortable2(),
+            options = list(
+                lengthMenu = c(25, 50, 100),
+                pageLength = 25,
+                autoWidth = FALSE,
+                columnDefs = list(list(
+                    width = '150px', targets = c(1, 3)
+                )),
+                order = list(1, 'asc')
+            )
+        )
+    output$user_table2 <-
+        DT::renderDataTable(
+            user_table(),
             options = list(
                 lengthMenu = c(25, 50, 100),
                 pageLength = 25,
@@ -1417,6 +1519,19 @@ server <- function(input, output, session) {
             )
         }
     })
+    output$schol_cycles_ui <- renderUI({
+        if (!is.null(query_result())) {
+            temp <- query_result()
+            c.choices <- unique(temp$Cycle)
+            checkboxGroupInput(
+                inputId = "schol_cycles",
+                label = "Cycles",
+                choices = c.choices,
+                selected = c.choices,
+                inline = TRUE
+            )
+        }
+    })
     output$preds <- renderUI({
         if (!is.null(query_result()) &
             input$predcurve1 == 1 | input$predcurve2 == 1) {
@@ -1516,7 +1631,7 @@ server <- function(input, output, session) {
             
             selectInput(
                 inputId = "allSelect",
-                label = "Select Group of Schools",
+                label = "Select Schools",
                 choices = r.choices1,
                 selected = NULL,
                 multiple = TRUE
@@ -1722,7 +1837,11 @@ server <- function(input, output, session) {
             
             p1 <- ggplot2::ggplot(df.temp2, ggplot2::aes(x = LSAT,
                                                          fill = Result)) +
-                ggplot2::geom_bar(colour = "black") +
+                ggplot2::geom_bar(colour = "black", aes(text = purrr::map(
+                    paste('</br>Count:',
+                          paste(..count..)),
+                    HTML
+                ))) +
                 ggplot2::facet_grid(. ~ School, scales = "free_y") +
                 ggplot2::scale_x_discrete(drop = FALSE) +
                 stat_stack_labels(color = "black", size = 3.5) +
@@ -1731,6 +1850,7 @@ server <- function(input, output, session) {
                     "Rejected" = cr,
                     "Waitlisted" = cw
                 ))
+            
             
             p2 <-
                 ggplot2::ggplot(df.temp2, ggplot2::aes(x = LSAT,
@@ -1769,10 +1889,12 @@ server <- function(input, output, session) {
         }
         
         if (input$bar_type == "Stack") {
-            return(plotly::ggplotly(p1, tooltip = c("x", "y", "n", "fill")))
+            # return(plotly::ggplotly(p1, tooltip = c("x", "y", "n", "fill")))
+            return(plotly::ggplotly(p1, tooltip = c("text")))
         }
         if (input$bar_type == "Fill") {
-            return(plotly::ggplotly(p2))
+            # return(plotly::ggplotly(p2))
+            return(plotly::ggplotly(p2, tooltip = c("text","y")))
         }
         
     })
@@ -1803,9 +1925,22 @@ server <- function(input, output, session) {
                                       y = Result,
                                       label = as.Date(Decision)
                                   )) +
-                ggplot2::geom_count(ggplot2::aes(fill = Result),
-                                    color = "black",
-                                    alpha = 0.7) +
+                ggplot2::geom_count(
+                    ggplot2::aes(
+                        fill = Result,
+                        text = purrr::map(
+                            paste(
+                                '</br>Count:',
+                                paste(..n..),
+                                '</br>Date:',
+                                paste(..label..)
+                            ),
+                            HTML
+                        )
+                    ),
+                    color = "black",
+                    alpha = 0.7
+                ) +
                 ggplot2::facet_grid(df1$School ~ .) +
                 ggplot2::scale_x_date(
                     "Time",
@@ -1830,9 +1965,22 @@ server <- function(input, output, session) {
                                       y = Result,
                                       label = as.Date(Decision)
                                   )) +
-                ggplot2::geom_count(ggplot2::aes(fill = Result),
-                                    color = "black",
-                                    alpha = 0.7) +
+                ggplot2::geom_count(
+                    ggplot2::aes(
+                        fill = Result,
+                        text = purrr::map(
+                            paste(
+                                '</br>Count:',
+                                paste(..n..),
+                                '</br>Date:',
+                                paste(..label..)
+                            ),
+                            HTML
+                        )
+                    ),
+                    color = "black",
+                    alpha = 0.7
+                ) +
                 ggplot2::facet_grid(School ~ .) +
                 ggplot2::scale_x_date(
                     "Time",
@@ -1846,7 +1994,8 @@ server <- function(input, output, session) {
                     date_labels = "%m-%d"
                 )
         }
-        return(plotly::ggplotly(p1, tooltip = c("n", "label")))
+        # return(plotly::ggplotly(p1, tooltip = c("n", "label")))
+        return(plotly::ggplotly(p1, tooltip = c("text")))
     })
     
     output$predplot1 <- plotly::renderPlotly({
@@ -1919,9 +2068,33 @@ server <- function(input, output, session) {
             plot = FALSE
         )
         
-        nd3 <- data.frame(LSAT = input$lsat_in2-1, GPA = seq(from = max(df_t$GPA)-0.2, to = 4.33, by = 0.01))
-        nd3 <- rbind(nd3,data.frame(LSAT = input$lsat_in2, GPA = seq(from = max(df_t$GPA)-0.2, to = 4.33, by = 0.01)))
-        nd3 <- rbind(nd3,data.frame(LSAT = input$lsat_in2+1, GPA = seq(from = max(df_t$GPA)-0.2, to = 4.33, by = 0.01)))
+        nd3 <-
+            data.frame(
+                LSAT = input$lsat_in2 - 1,
+                GPA = seq(
+                    from = max(df_t$GPA) - 0.2,
+                    to = 4.33,
+                    by = 0.01
+                )
+            )
+        nd3 <-
+            rbind(nd3, data.frame(
+                LSAT = input$lsat_in2,
+                GPA = seq(
+                    from = max(df_t$GPA) - 0.2,
+                    to = 4.33,
+                    by = 0.01
+                )
+            ))
+        nd3 <-
+            rbind(nd3, data.frame(
+                LSAT = input$lsat_in2 + 1,
+                GPA = seq(
+                    from = max(df_t$GPA) - 0.2,
+                    to = 4.33,
+                    by = 0.01
+                )
+            ))
         
         ilink <- stats::family(model)$linkinv
         nd3 <-
@@ -1951,7 +2124,7 @@ server <- function(input, output, session) {
                     input$lsat_in2 + 1
                 ),
                 gg = TRUE,
-                line.par=list(col="royalblue1")
+                line.par = list(col = "royalblue1")
             ) +
                 ggplot2::scale_x_continuous(limits = c(2.5, 4.33),
                                             breaks = c(seq(2.5, 4.3, 0.1))) +
@@ -2004,12 +2177,26 @@ server <- function(input, output, session) {
                     ),
                     alpha = 0,
                     shape = 21
-                )+
-                ggplot2::geom_ribbon(data = nd3,aes(x=GPA,ymin=Lower,ymax=Upper,y=Fitted),color = "grey85", fill ="grey85")+
-                ggplot2::geom_smooth(data = nd3,ggplot2::aes(x=GPA,y=Fitted),color = "royalblue1")
+                ) +
+                ggplot2::geom_ribbon(
+                    data = nd3,
+                    aes(
+                        x = GPA,
+                        ymin = Lower,
+                        ymax = Upper,
+                        y = Fitted
+                    ),
+                    color = "grey85",
+                    fill = "grey85"
+                ) +
+                ggplot2::geom_smooth(data = nd3,
+                                     ggplot2::aes(x = GPA, y = Fitted),
+                                     color = "royalblue1")
             
-            v1 <- gginnards::move_layers(v1,"GeomSmooth",position = "bottom")
-            v1 <- gginnards::move_layers(v1,"GeomRibbon",position = "bottom")
+            v1 <-
+                gginnards::move_layers(v1, "GeomSmooth", position = "bottom")
+            v1 <-
+                gginnards::move_layers(v1, "GeomRibbon", position = "bottom")
             
             
             plotly::ggplotly(v1 + ggplot2::ggtitle(
@@ -2032,7 +2219,7 @@ server <- function(input, output, session) {
                     input$lsat_in2 + 1
                 ),
                 gg = TRUE,
-                line.par=list(col="royalblue1")
+                line.par = list(col = "royalblue1")
             ) +
                 ggplot2::scale_x_continuous(limits = c(2.5, 4.33),
                                             breaks = c(seq(2.5, 4.3, 0.1))) +
@@ -2054,14 +2241,28 @@ server <- function(input, output, session) {
                     ),
                     alpha = 0,
                     shape = 21
-                )+
+                ) +
                 ggplot2::theme(legend.position = "none") +
-                ggplot2::geom_ribbon(data = nd3,aes(x=GPA,ymin=Lower,ymax=Upper,y=Fitted),color = "grey85", fill ="grey85")+
-                ggplot2::geom_smooth(data = nd3,ggplot2::aes(x=GPA,y=Fitted),color = "royalblue1")
+                ggplot2::geom_ribbon(
+                    data = nd3,
+                    aes(
+                        x = GPA,
+                        ymin = Lower,
+                        ymax = Upper,
+                        y = Fitted
+                    ),
+                    color = "grey85",
+                    fill = "grey85"
+                ) +
+                ggplot2::geom_smooth(data = nd3,
+                                     ggplot2::aes(x = GPA, y = Fitted),
+                                     color = "royalblue1")
             
-            v1 <- gginnards::move_layers(v1,"GeomSmooth",position = "bottom")
-            v1 <- gginnards::move_layers(v1,"GeomRibbon",position = "bottom")
-
+            v1 <-
+                gginnards::move_layers(v1, "GeomSmooth", position = "bottom")
+            v1 <-
+                gginnards::move_layers(v1, "GeomRibbon", position = "bottom")
+            
             
             return(plotly::ggplotly(v1 + ggplot2::ggtitle(
                 paste(school_name, " - ", "Pr(Accepted) by GPA by LSAT", sep = "")
@@ -2137,9 +2338,31 @@ server <- function(input, output, session) {
         
         nd1$prob <- predict(model, newdata = nd1, type = "response")
         
-        nd3 <- data.frame(GPA = input$gpa_in2 - 0.05, LSAT = seq(from = max(df_t$LSAT)-1, to = 180, by = 1))
-        nd3 <- rbind(nd3,data.frame(GPA = input$gpa_in2, LSAT = seq(from = max(df_t$LSAT)-1, to = 180, by = 1)))
-        nd3 <- rbind(nd3,data.frame(GPA = input$gpa_in2 + 0.05, LSAT = seq(from = max(df_t$LSAT)-1, to = 180, by = 1)))
+        nd3 <-
+            data.frame(GPA = input$gpa_in2 - 0.05,
+                       LSAT = seq(
+                           from = max(df_t$LSAT) - 1,
+                           to = 180,
+                           by = 1
+                       ))
+        nd3 <-
+            rbind(nd3, data.frame(
+                GPA = input$gpa_in2,
+                LSAT = seq(
+                    from = max(df_t$LSAT) - 1,
+                    to = 180,
+                    by = 1
+                )
+            ))
+        nd3 <-
+            rbind(nd3, data.frame(
+                GPA = input$gpa_in2 + 0.05,
+                LSAT = seq(
+                    from = max(df_t$LSAT) - 1,
+                    to = 180,
+                    by = 1
+                )
+            ))
         
         ilink <- stats::family(model)$linkinv
         nd3 <-
@@ -2184,7 +2407,7 @@ server <- function(input, output, session) {
                     input$gpa_in2 + 0.05
                 ),
                 gg = TRUE,
-                line.par=list(col="royalblue1")
+                line.par = list(col = "royalblue1")
             ) +
                 ggplot2::scale_x_continuous(limits = c(150, 180),
                                             breaks = c(150:180)) +
@@ -2237,12 +2460,26 @@ server <- function(input, output, session) {
                     alpha = 0,
                     shape = 21
                 ) +
-                ggplot2::theme(legend.position = "none")+
-                ggplot2::geom_ribbon(data = nd3,aes(x=LSAT,ymin=Lower,ymax=Upper,y=Fitted),color = "grey85", fill ="grey85")+
-                ggplot2::geom_smooth(data = nd3,ggplot2::aes(x=LSAT,y=Fitted),color = "royalblue1")
+                ggplot2::theme(legend.position = "none") +
+                ggplot2::geom_ribbon(
+                    data = nd3,
+                    aes(
+                        x = LSAT,
+                        ymin = Lower,
+                        ymax = Upper,
+                        y = Fitted
+                    ),
+                    color = "grey85",
+                    fill = "grey85"
+                ) +
+                ggplot2::geom_smooth(data = nd3,
+                                     ggplot2::aes(x = LSAT, y = Fitted),
+                                     color = "royalblue1")
             
-            v1 <- gginnards::move_layers(v1,"GeomSmooth",position = "bottom")
-            v1 <- gginnards::move_layers(v1,"GeomRibbon",position = "bottom")
+            v1 <-
+                gginnards::move_layers(v1, "GeomSmooth", position = "bottom")
+            v1 <-
+                gginnards::move_layers(v1, "GeomRibbon", position = "bottom")
             
             plotly::ggplotly(v1 + ggplot2::ggtitle(
                 paste(school_name, " - ", "Pr(Accepted) by GPA by LSAT", sep = "")
@@ -2264,7 +2501,7 @@ server <- function(input, output, session) {
                     input$gpa_in2 + 0.05
                 ),
                 gg = TRUE,
-                line.par=list(col="royalblue1")
+                line.par = list(col = "royalblue1")
             ) +
                 ggplot2::scale_x_continuous(limits = c(150, 180),
                                             breaks = c(150:180)) +
@@ -2286,13 +2523,27 @@ server <- function(input, output, session) {
                     ),
                     alpha = 0,
                     shape = 21
-                )+
+                ) +
                 ggplot2::theme(legend.position = "none") +
-                ggplot2::geom_ribbon(data = nd3,aes(x=LSAT,ymin=Lower,ymax=Upper,y=Fitted),color = "grey85", fill ="grey85")+
-                ggplot2::geom_smooth(data = nd3,ggplot2::aes(x=LSAT,y=Fitted),color = "royalblue1")
+                ggplot2::geom_ribbon(
+                    data = nd3,
+                    aes(
+                        x = LSAT,
+                        ymin = Lower,
+                        ymax = Upper,
+                        y = Fitted
+                    ),
+                    color = "grey85",
+                    fill = "grey85"
+                ) +
+                ggplot2::geom_smooth(data = nd3,
+                                     ggplot2::aes(x = LSAT, y = Fitted),
+                                     color = "royalblue1")
             
-            v1 <- gginnards::move_layers(v1,"GeomSmooth",position = "bottom")
-            v1 <- gginnards::move_layers(v1,"GeomRibbon",position = "bottom")
+            v1 <-
+                gginnards::move_layers(v1, "GeomSmooth", position = "bottom")
+            v1 <-
+                gginnards::move_layers(v1, "GeomRibbon", position = "bottom")
             
             return(plotly::ggplotly(v1 + ggplot2::ggtitle(
                 paste(school_name, " - ", "Pr(Accepted) by LSAT by GPA", sep = "")
@@ -2518,6 +2769,7 @@ server <- function(input, output, session) {
         posn.j <-
             ggplot2::position_jitter(width = 0.2, height = 0.05)
         df1 <- df1[df1$School %in% input$school1,]
+        df1 <- df1[df1$Cycle %in% input$schol_cycles,]
         if (input$schol_urm == 1) {
             df1 <- df1[df1$URM == 1, ]
         }
@@ -2547,7 +2799,9 @@ server <- function(input, output, session) {
                         '</br>Money:',
                         Money,
                         '</br>URM:',
-                        URM
+                        URM,
+                        '</br>Cycle:',
+                        Cycle
                     ),
                     HTML
                 )),
@@ -2569,6 +2823,7 @@ server <- function(input, output, session) {
         posn.j <-
             ggplot2::position_jitter(width = 0.2, height = 0.05)
         df1 <- df1[df1$School %in% input$school2,]
+        df1 <- df1[df1$Cycle %in% input$schol_cycles,]
         if (input$schol_urm == 1) {
             df1 <- df1[df1$URM == 1, ]
         }
@@ -2600,7 +2855,9 @@ server <- function(input, output, session) {
                         '</br>Money:',
                         Money,
                         '</br>URM:',
-                        URM
+                        URM,
+                        '</br>Cycle:',
+                        Cycle
                     ),
                     HTML
                 )),
