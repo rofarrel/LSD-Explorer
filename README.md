@@ -1,5 +1,5 @@
 # LSD-Explorer-v1.6 (Windows Only)
-### Last Update: June 19, 2020
+### Last Update: June 28, 2020
 ```diff
 @@  1.6.1 Changelog:  @@
       * Added a cycle filter to the 'Scholarship' tab
