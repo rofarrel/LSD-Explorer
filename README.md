@@ -1,6 +1,9 @@
 # LSD-Explorer-v1.6 (Windows Only)
 ### Last Update: June 28, 2020
 ```diff
+@@  1.6.2 Changelog:  @@
+      * Fixed user table in View Data tab not reacting to LSAT and GPA inputs
+      
 @@  1.6.1 Changelog:  @@
       * Added a cycle filter to the 'Scholarship' tab
       * Added a dedicated user search sub-panel in the 'View Data' tab
