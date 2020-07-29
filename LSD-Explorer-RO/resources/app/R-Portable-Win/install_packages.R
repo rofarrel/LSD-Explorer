@@ -23,10 +23,10 @@ if (!requireNamespace("BiocManager", quietly = TRUE)){
 if (!requireNamespace("magrittr", quietly = TRUE)){
   utils::install.packages("magrittr", repos='http://cran.us.r-project.org')
 }
-# library(batch)
-# library(purrr)
-# library(stringr)
-# library(magrittr)
+library(batch)
+library(purrr)
+library(stringr)
+library(magrittr)
 
 parseCommandArgs(evaluate=TRUE)
 
@@ -58,28 +58,17 @@ installFun <- function(packages, type="cran"){
   }
 }
 
-# utils::install.packages("C:\Users\riley\Downloads\purrr_0.3.3.tar.gz", repos = NULL, type="source")
-
-
 if(!is.null(cran_packages)){
-  # utils::install.packages("C:\Users\riley\Downloads\purrr", repos = NULL, type="source")
-  # packageurl <- "https://cran.r-project.org/src/contrib/Archive/purrr/purrr_0.3.3.tar.gz"
-  # utils::install.packages(packageurl, repos=NULL, type="source")
-  # utils::install.packages("purrr", repos='')
   cran_packages %>%
     clean_package_list() %>%
     purrr::map(installFun, "cran")
 }
-
-# devtools::install_version(package = "purrr",version = "0.3.3",repos="http://cran.us.r-project.org")
 
 if (!is.null(bioc_packages)){
   bioc_packages %>%
     clean_package_list() %>%
     purrr::map(installFun, "bioc")
 }
-
-
 
 if (!is.null(github_packages)){
   github_packages %>%  

@@ -1186,6 +1186,19 @@ server <- function(input, output, session) {
     })
     
     colortable2 <- reactive({
+        df.temp2 <- dfPlot()
+        df.temp2 <-
+            df.temp2[df.temp2$LSAT >= input$lsat_in[1] &
+                         df.temp2$LSAT <= input$lsat_in[2],]
+        df.temp2 <- df.temp2[is.na(df.temp2$User) == FALSE,]
+        df.temp2 <-
+            df.temp2[df.temp2$GPA >= input$gpa_in[1] &
+                         df.temp2$GPA <= input$gpa_in[2],]
+        df.temp2 <- df.temp2[is.na(df.temp2$User) == FALSE,]
+        
+        df.temp2$LSAT <- as.factor(df.temp2$LSAT)
+        df.temp2$Result <- as.factor(df.temp2$Result)
+        
         cols <- c(gg_color_hue(3)[1:2], "khaki")
         
         cr <- gg_color_hue(3)[1]
@@ -1222,7 +1235,7 @@ server <- function(input, output, session) {
         
         return(
             DT::datatable(
-                dfPlot(),
+                df.temp2,
                 options = list(order = list(14, 'desc')),
                 rownames = FALSE
             ) %>% DT::formatStyle(
@@ -1894,7 +1907,7 @@ server <- function(input, output, session) {
         }
         if (input$bar_type == "Fill") {
             # return(plotly::ggplotly(p2))
-            return(plotly::ggplotly(p2, tooltip = c("text","y")))
+            return(plotly::ggplotly(p2, tooltip = c("text","count")))
         }
         
     })
