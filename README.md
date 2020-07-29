@@ -1,6 +1,9 @@
 # LSD-Explorer-v1.6 (Windows Only)
 ### Last Update: July 29, 2020
 ```diff
+@@ Hotfix July 29, 5:45pm GST  @@
+      * Fixed missing gginnards package error for Predictor
+      
 @@  1.6.2 Changelog:  @@
       * Fixed user table in View Data tab not reacting to LSAT and GPA inputs
       
