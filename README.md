@@ -11,20 +11,21 @@ Version 2 Has Arrived!
       * Added a Feedback tab that links to an issue-reporting thread
 
 @@  2.0 Issues and Bugs:  @@
-      * The app still often loads to a blank white page when first opening the app. Click "View" then "Reload" to load the app.
-      * The Electron framework sometimes does not close all windows processes upon exiting the program. Check your task manager
-        for "Electron" or "R-Portable Front End" processes lingering after closing the application.
+      * The app still often loads to a blank white page when first opening the app. Click "View" then "Reload" to
+        load the app.
+      * The Electron framework sometimes does not close all windows processes upon exiting the program. Check your
+        task manager for "Electron" or "R-Portable Front End" processes lingering after closing the application.
 ```
-
+Here is a video showing how the app works: https://www.youtube.com/watch?v=GRMn8NR45c4
     
 ![LSD Explorer](https://i.imgur.com/udwM9nJ.png)
+
 
 ### 2. If you are from a law school, please visit https://rofarrel.shinyapps.io/LSD-Explorer-v-1-6/ for a web version of the app. Please read below:
 ```diff
 ! Enter my LSAC ID as the username and password for access.
 ! This secure login is only implemented for the web version to prevent public visitors from using server resources.
 ```
-I have a youtube video showing how the app works here: https://www.youtube.com/watch?v=GRMn8NR45c4
 
 ### 3. **How to Use**
 
