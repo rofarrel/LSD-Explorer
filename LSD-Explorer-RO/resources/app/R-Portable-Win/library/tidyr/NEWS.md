@@ -1,3 +1,14 @@
+# tidyr 1.1.1
+
+* New tidyr logo!
+
+* stringi dependency has been removed; this was a substantial dependency that
+  make tidyr hard to compile in resource constrained environments 
+  (@rjpat, #936).
+  
+* Replace Rcpp with cpp11. See <https://cpp11.r-lib.org/articles/motivations.html>
+  for reasons why.
+
 # tidyr 1.1.0
 
 ## General features

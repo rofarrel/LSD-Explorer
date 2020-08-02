@@ -1,4 +1,4 @@
-2528204702cdee5237ebaf66dfa36ed6 *DESCRIPTION
+5dcefe36b56465cb7b5b9e7480ccead8 *DESCRIPTION
 25b3b6100a15fa2c8b5eb52140b2c85c *INDEX
 1ee0683cce6d3479250337954c075d63 *LICENSE
 a4d0d2648c270235eca4436c7958b6dc *Meta/Rd.rds
@@ -6,7 +6,7 @@ a4d0d2648c270235eca4436c7958b6dc *Meta/Rd.rds
 344e002853b375aa2f7ed9df7ea47ced *Meta/hsearch.rds
 baf4ed52da83b7f1066728d91f36d105 *Meta/links.rds
 07a1fb1309052569b6518cdd24cd765d *Meta/nsInfo.rds
-b57a2ae8faee4e19db335ea7a4b8def6 *Meta/package.rds
+131b1d865bedc6b1fcec9f57b0b2e1b6 *Meta/package.rds
 0a3b86119731bfb2f20a16f7c64d2a4a *NAMESPACE
 01fdb7a9e94535a0df2b0e7a1bf58007 *NEWS
 ebf0fc819595d631b8bf280c4b049940 *R/webutils
@@ -14,13 +14,13 @@ ebf0fc819595d631b8bf280c4b049940 *R/webutils
 43e9c8ee161fced4c00c441d1243907c *R/webutils.rdx
 ed38ccc786016aa20d0498e456c6c226 *help/AnIndex
 065d7931da3f7b355f1c0a47e9dda00e *help/aliases.rds
-45e0975a2a257b99e875f371ea7f74ed *help/paths.rds
-f2cd64a70c7d420bfa11b655029a0942 *help/webutils.rdb
-044152818dbc8bcfceca67984e90d0fb *help/webutils.rdx
+e52d977abe187dd6a0932afc279d61de *help/paths.rds
+b2964e4143124559bd697f42337cfc88 *help/webutils.rdb
+04c8491c9c36fb8c53d9d5d87079a0b7 *help/webutils.rdx
 272424131aa9eef3ea7571b09a1ef3f7 *html/00Index.html
 b6763e6916890c631fdc3f2643803b1a *html/R.css
 1b2c8340b47bfe5e90ef65828dc5870c *libs/i386/symbols.rds
-4cce39bd4234ecf509aeb1c0a5499fb7 *libs/i386/webutils.dll
+5a321179c3abdc96a8d6f19a513f7664 *libs/i386/webutils.dll
 7f63fdf68eaf79e19ec577371fcefcca *libs/x64/symbols.rds
-3fc87ae30fffd11857d3f3c2e9615620 *libs/x64/webutils.dll
+e4a09130467787fbb3e4291075c64a45 *libs/x64/webutils.dll
 c2e0f93503193f7f6e8dd4bdc008e196 *testpage.html

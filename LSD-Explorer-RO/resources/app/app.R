@@ -30,7 +30,7 @@ if (is.null(suppressMessages(webshot:::find_phantom()))) {
 }
 # library(graph)
 # install_github("larmarange/JLutils", lib = )
-# rtweet,selectr,debugme,showimage,curl,webutils,knitr,ps,processx,callr,iterators,generics,farver,foreach,tidyr,httr,htmlwidgets,webshot,webdriver,doParallel,cellranger,withr,hms,tidyselect,vctrs,data.table,plyr,plotly,scales,splitstackshape,readr,shiny,readxl,Rcrawler,xml2,shinyFiles,lubridate,formattable,DT,visreg,htmltools,rlang,httpuv,later,promises,retry,websocket,fastmap,crayon,digest,xtable,jsonlite,mime,pillar,lifecycle,shinyjs,shinythemes
+# shinyFeedback,rtweet,selectr,debugme,showimage,curl,webutils,knitr,ps,processx,callr,iterators,generics,farver,foreach,tidyr,httr,htmlwidgets,webshot,webdriver,doParallel,cellranger,withr,hms,tidyselect,vctrs,data.table,plyr,plotly,scales,splitstackshape,readr,shiny,readxl,Rcrawler,xml2,shinyFiles,lubridate,formattable,DT,visreg,htmltools,rlang,httpuv,later,promises,retry,websocket,fastmap,crayon,digest,xtable,jsonlite,mime,pillar,lifecycle,shinyjs,shinythemes
 
 
 
@@ -172,27 +172,28 @@ stat_stack_labels <<-
         )
     }
 
-inactivity <- "function idleTimer() {
-var t = setTimeout(logout, 120000);
-window.onmousemove = resetTimer; // catches mouse movements
-window.onmousedown = resetTimer; // catches mouse movements
-window.onclick = resetTimer;     // catches mouse clicks
-window.onscroll = resetTimer;    // catches scrolling
-window.onkeypress = resetTimer;  //catches keyboard actions
-
-function logout() {
-window.close();  //close the window
-}
-
-function resetTimer() {
-clearTimeout(t);
-t = setTimeout(logout, 120000);  // time is in milliseconds (1000 is 1 second)
-}
-}
-idleTimer();"
+# inactivity <- "function idleTimer() {
+# var t = setTimeout(logout, 120000);
+# window.onmousemove = resetTimer; // catches mouse movements
+# window.onmousedown = resetTimer; // catches mouse movements
+# window.onclick = resetTimer;     // catches mouse clicks
+# window.onscroll = resetTimer;    // catches scrolling
+# window.onkeypress = resetTimer;  //catches keyboard actions
+# 
+# function logout() {
+# window.close();  //close the window
+# }
+# 
+# function resetTimer() {
+# clearTimeout(t);
+# t = setTimeout(logout, 120000);  // time is in milliseconds (1000 is 1 second)
+# }
+# }
+# idleTimer();"
 
 ui <- shiny::tagList(
     shinyjs::useShinyjs(),
+    shinyFeedback::useShinyFeedback(),
     tags$head(tags$style(
         HTML(
             ".shiny-notification {
@@ -218,27 +219,28 @@ ui <- shiny::tagList(
                              inputId = "dataselector",
                              label = "Select Data",
                              choices = c(
+                                 "Preloaded Data" = "d",
                                  "Imported Previous Dataset" = "a",
                                  "Downloaded New Data" = "b",
                                  "Merged Old Data and New Data" = "c"
                              ),
-                             selected = "a"
+                             selected = "d"
                          ),
                          h4("_________________"),
                          h4(strong("Get Data from LSD:")),
                          p(
                              "Here you can download live data from LawSchoolData.org. Select the Cycle and and Schools you wish to download"
                          ),
-                         radioButtons(
+                         shiny::checkboxGroupInput(
                              inputId = "cycleSelect",
-                             label = "Cycle",
+                             label = "Cycles",
                              choices = c(
                                  "17-18" = 15,
                                  "18-19" = 16,
                                  "19-20" = 17,
                                  "20-21" = 18
                              ),
-                             selected = 17,
+                             # selected = 17,
                              inline = TRUE
                              
                          ),
@@ -261,6 +263,7 @@ ui <- shiny::tagList(
                              width = NULL
                          )
                          ,
+                         tags$p("Missing schools or cycles.",style="color:red", id = "scrapeWarn"),
                          h4("_________________"),
                          h4(strong("Import Data:")),
                          p(
@@ -285,6 +288,31 @@ ui <- shiny::tagList(
                          p(
                              "Here you may combine an imported old data set with any new data you have downloaded"
                          ),
+                         selectInput(
+                             inputId = "merge_choice_1",
+                             label = "Merge Data Choice 1: New Data",
+                             choices = c(
+                                 "-----" = "blank",
+                                 "Imported Data" = "import",
+                                 "Downloaded Data" = "scrape",
+                                 "Merged Data" = "merge"
+                             ),
+                             selected = "blank",
+                             multiple = FALSE
+                         ), 
+                         selectInput(
+                             inputId = "merge_choice_2",
+                             label = "Merge Data Choice 2: Old Data",
+                             choices = c(
+                                 "-----" = "blank",
+                                 "Preloaded Data" = "preload",
+                                 "Imported Data" = "import",
+                                 "Downloaded Data" = "scrape",
+                                 "Merged Data" = "merge"
+                             ),
+                             selected = "blank",
+                             multiple = FALSE
+                         ), 
                          actionButton(
                              inputId = "mergeButton",
                              label = "Merge",
@@ -352,24 +380,32 @@ ui <- shiny::tagList(
                     uiOutput("side3"),
                     radioButtons(
                         inputId = "complete_yn",
-                        label = "Use Complete Dates?",
+                        label = "Use A Date Filter?",
                         choices = c("Yes", "No"),
                         selected = "No",
                         inline = TRUE
                     ),
-                    
+                    # uiOutput("date_filter_1"),
+                    # uiOutput("date_filter_2"),
+                    selectInput(
+                        inputId = "choose_date_filter",
+                        label = "Pick a date type:",
+                        choices = c("Sent Date" = "sent",
+                                    "Complete Date" = "complete",
+                                    "Interview Invite (II)" = "ii"),
+                        selected = "complete"
+                    ),
                     dateRangeInput(
                         inputId = "complete_d",
-                        label = "Selected Complete date range in YYYY-MM-DD Format",
+                        label = "Select a date range in YYYY-MM-DD Format",
                         start = "2018-09-01",
                         end = "2020-01-01",
                         separator = "to"
                     ),
-                    p(
-                        em(
-                            "You may filter the data for the time-series plot by application 'Complete' dates to view when individuals with certain complete dates received their decisions"
-                        )
-                    ),
+                    uiOutput("date_warning"),
+                    # p(em("You may filter the data for the time-series plot by application 'Complete' dates to view when individuals with certain complete dates received their decisions"
+                    #     )
+                    # ),
                     radioButtons(
                         inputId = "resultbin",
                         label = "Use Simple Result Binning?",
@@ -517,6 +553,7 @@ ui <- shiny::tagList(
                              width = NULL
                          ),
                          uiOutput("months"),
+                         uiOutput("pred_cycle"),
                          width = 3
                      ),
                      mainPanel(
@@ -570,7 +607,10 @@ ui <- shiny::tagList(
                          tabPanel("Table", DT::dataTableOutput("tweet_table")),
                          tabPanel("Time Series", plotly::plotlyOutput("tweet_time_series"))
                      ))
-                 ))
+                 )),
+        tabPanel("Feedback",
+                 fluidPage(p("To report bugs and broken features, please submit and issue thread at:"),
+                           tags$a(href="https://github.com/rofarrel/LSD-Explorer/issues", "https://github.com/rofarrel/LSD-Explorer/issues")))
     )
 )
 
@@ -600,10 +640,7 @@ server <- function(input, output, session) {
     #
     # init.count <- reactiveVal()
     # init.count(1)
-    # #
-    # initdata <-
-    #     readr::read_csv(file = "LSDEdata-2020-06-06 - T14 all 3 cycles.csv", col_names = TRUE)
-    # #
+    
     # observeEvent(input$loadButton, {
     #     newval <- init.count() + 1
     #     init.count(newval)
@@ -612,6 +649,47 @@ server <- function(input, output, session) {
     #     newval <- init.count() + 1
     #     init.count(newval)
     # })
+    #
+    initdata <-
+        readr::read_csv(file = "preload_data.csv", col_names = TRUE)
+
+
+    
+    observe({
+        if (length(input$allSelect)*length(input$cycleSelect) > 20) {
+            shinyFeedback::showFeedbackWarning(
+                inputId = "allSelect",
+                text = "More than 20 pages (schools * cycles) in a single request may result in a timeout error. Try downloading fewer pages, saving the data, importing it, downloading the next set of pages, and merging them."
+            )  
+        } else {
+            shinyFeedback::hideFeedback("allSelect")
+        }})
+
+    observe({
+        if ((input$tierSelect == 225 & length(input$allSelect) >= 1) | (input$tierSelect == 14 & length(input$cycleSelect) >= 1) | (input$tierSelect == 20 & length(input$cycleSelect) >= 1)) {
+            shinyjs::enable(id = "scrapeButton")
+            shinyjs::hideElement("scrapeWarn")
+        }else{
+            shinyjs::disable(id = "scrapeButton")
+            shinyjs::showElement("scrapeWarn")
+        }})
+    
+    observe({
+        if ((input$tierSelect == 14 | input$tierSelect == 20) & length(input$cycleSelect) > 1) {
+            shinyFeedback::showFeedbackWarning(
+                inputId = "tierSelect",
+                text = "More than 20 pages (schools * cycles) in a single request may result in a timeout error. Try downloading fewer pages, saving the data, importing it, downloading the next set of pages, and merging them."
+            )  
+        } else {
+            shinyFeedback::hideFeedback("tierSelect")
+        }})
+    observe({
+        if (input$merge_choice_1 == "blank" | input$merge_choice_2 == "blank") {
+            shinyjs::disable(id = "mergeButton")
+        } else {
+            shinyjs::enable(id = "mergeButton")
+        }})
+    
     schools2 <- reactive({
         b1 <-
             c(
@@ -856,9 +934,11 @@ server <- function(input, output, session) {
             )
         temp <- as.data.frame(cbind(b1, b3, b2, ranks))
         temp$full <-
-            paste(temp$b1, input$cycleSelect, temp$b3, sep = "")
-        schoolurls <- temp[, c("full", "b2", "ranks")]
-        colnames(schoolurls) <- c("X1", "X2", "rank")
+            paste(temp$b1, "placeholderusedtobeCycleSelect", temp$b3, sep = "")
+        temp$full <-                                               ####
+            paste(temp$b1, 16, temp$b3, sep = "")   ####
+        schoolurls <- temp[, c("full", "b2", "ranks", "b1", "b3")]
+        colnames(schoolurls) <- c("X1", "X2", "rank", "b1", "b3")
         schoolurls$rank <-
             as.integer(as.character(schoolurls$rank))
         schoolurls$X1 <- as.character(schoolurls$X1)
@@ -889,9 +969,9 @@ server <- function(input, output, session) {
             "To get started, select schools to download their data or import a previously saved dataset."
         )
     })
-    # output$introtext2 <- renderUI(if (val() == 1) {
-    #     p(em("Preloaded data last updated June 6, 2020"))
-    # })
+    output$introtext2 <- renderUI( if(input$dataselector == "d") {
+        p(em("Preloaded data last updated August 3, 2020. To set your own Preloaded data, replace the 'preload_data.csv' file in the /Resources/App/ folder with your own file saved from this app. It must have the name 'preload_data'."))
+    })
     
     output$frontpage <- renderUI(if (!is.null(query_result())) {
         conditionalPanel(condition = "'val' != 1",
@@ -910,7 +990,7 @@ server <- function(input, output, session) {
                          ))
     })
     schools <-
-        eventReactive(c(input$tierSelect, input$cycleSelect, input$allSelect),
+        eventReactive(c(input$tierSelect, input$allSelect),
                       {
                           schoolurls <- schools2()
                           schoolurls$X1 <-
@@ -921,7 +1001,7 @@ server <- function(input, output, session) {
                               namecheck <- input$allSelect
                               schoolurls <-
                                   schoolurls[schoolurls$X2 %in% namecheck, ]
-                          } else{
+                          }else{
                               rankcheck <- 1:input$tierSelect
                               schoolurls <-
                                   schoolurls[schoolurls$rank %in% rankcheck, ]
@@ -930,8 +1010,8 @@ server <- function(input, output, session) {
                               as.character(schoolurls$X1)
                           schoolurls$X2 <-
                               as.character(schoolurls$X2)
-                          rm(rankcheck)
-                          rm(namecheck)
+                          # rm(rankcheck)
+                          # rm(namecheck)
                           return(schoolurls)
                       })
     
@@ -964,15 +1044,23 @@ server <- function(input, output, session) {
     dfScrape <- eventReactive(input$scrapeButton, {
         br <- Rcrawler::run_browser()
         mylist <- list()
-        schoolurls <- schools()
-        schoolurls <-
-            data.frame(lapply(schoolurls, as.character), stringsAsFactors = FALSE)
+        schoolurls <- schools()     # CHECK HERE
+        xyz <-
+            vector("list", 0)
+        for (i in input$cycleSelect){
+            schooltemp <- cbind(X1 = paste(schoolurls$b1, i, schoolurls$b3, sep = ""), X2 = as.character(schoolurls$X2)) # fix change from temp to appropriate df
+            schooltemp <- data.frame(schooltemp)
+            xyz[[as.character(i)]] <- schooltemp
+        }
+        schooltemp <- do.call(rbind, xyz)
+        schooltemp <-
+            data.frame(lapply(schooltemp, as.character), stringsAsFactors = FALSE) ### CHECK HERE FOR REDUNDANCY
         withProgress(message = 'Please Wait:',
                      value = 0,
                      {
                          shinyjs::disable("scrapeButton")
-                         for (i in seq_along(schoolurls$X1)) {
-                             url <- schoolurls$X1[i]
+                         for (i in seq_along(schooltemp$X1)) {
+                             url <- schooltemp$X1[i]
                              
                              page1 <-
                                  Rcrawler::LinkExtractor(url = url, Browser = br, )
@@ -1025,25 +1113,48 @@ server <- function(input, output, session) {
                                  )
                              riley2 <- data.frame(riley2)
                              riley2$school <-
-                                 paste(schoolurls$X2[i])
-                             if (as.numeric(input$cycleSelect) == 15) {
-                                 riley2$cycle <- paste("17-18")
+                                 paste(schooltemp$X2[i])
+                             ###
+                             rownames(schooltemp) <- NULL
+                             riley2$cycle <- ""
+                             # riley2$cycle[which(stringr::str_detect(schooltemp$X1,"15"))] <- "17-18"
+                             # riley2$cycle[which(stringr::str_detect(schooltemp$X1,"16"))] <- "18-19"
+                             # riley2$cycle[which(stringr::str_detect(schooltemp$X1,"17"))] <- "19-20"
+                             # riley2$cycle[which(stringr::str_detect(schooltemp$X1,"18"))] <- "20-21"
+                             
+                             if (stringr::str_detect(schooltemp$X1[i],"15")){
+                                 riley2$cycle <- "17-18"
                              }
-                             if (as.numeric(input$cycleSelect) == 16) {
-                                 riley2$cycle <- paste("18-19")
+                             if (stringr::str_detect(schooltemp$X1[i],"16")){
+                                 riley2$cycle <- "18-19"
                              }
-                             if (as.numeric(input$cycleSelect) == 17) {
-                                 riley2$cycle <- paste("19-20")
+                             if (stringr::str_detect(schooltemp$X1[i],"17")){
+                                 riley2$cycle <- "19-20"
                              }
-                             if (as.numeric(input$cycleSelect) == 18) {
-                                 riley2$cycle <- paste("20-21")
+                             if (stringr::str_detect(schooltemp$X1[i],"18")){
+                                 riley2$cycle <- "20-21"
                              }
+                             
+                             ### CHECK FOR REDUNDANCY
+                             # if (as.numeric(input$cycleSelect) == 15) {
+                             #     riley2$cycle <- paste("17-18")
+                             # }
+                             # if (as.numeric(input$cycleSelect) == 16) {
+                             #     riley2$cycle <- paste("18-19")
+                             # }
+                             # if (as.numeric(input$cycleSelect) == 17) {
+                             #     riley2$cycle <- paste("19-20")
+                             # }
+                             # if (as.numeric(input$cycleSelect) == 18) {
+                             #     riley2$cycle <- paste("20-21")
+                             # }
+                             
                              mylist[[i]] <- riley2
                              if (i %% 2 == 0) {
                                  gc()
                                  
                              }
-                             tval <- length(schoolurls$X1)
+                             tval <- length(schooltemp$X1)
                              incProgress(
                                  amount = 1 / tval,
                                  detail = paste(
@@ -1128,9 +1239,9 @@ server <- function(input, output, session) {
                      })
     })
     query_result <- reactive({
-        # if (init.count() == 1) {
-        #     return(initdata)
-        # }
+        if (input$dataselector == "d") {
+            return(initdata)
+        }
         if (input$dataselector == "a") {
             if (!is.null(dfLoad()) == TRUE) {
                 return(dfLoad())
@@ -1532,6 +1643,48 @@ server <- function(input, output, session) {
             )
         }
     })
+    output$pred_cycle <- renderUI({
+        if (!is.null(query_result())) {
+            temp <- query_result()
+            c.choices <- unique(temp$Cycle)
+            checkboxGroupInput(
+                inputId = "pred_cycleid",
+                label = "Modeled from Cycles:",
+                choices = c.choices,
+                selected = c.choices,
+                inline = TRUE
+            )
+        }
+    })
+    
+    # output$date_filter_1 <- renderUI({
+    #     if (input$complete_yn == "Yes") {
+    #         selectInput(
+    #             inputId = "choose_date_filter",
+    #             label = "Pick an date type:",
+    #             choices = c("Sent Date" = "sent",
+    #                         "Complete Date" = "complete",
+    #                         "Interview Invite (II)" = "ii"),
+    #             selected = "complete"
+    #         )
+    #     }
+    # })
+    # output$date_filter_2 <- renderUI({
+    #     if (input$complete_yn == "Yes") {
+    #         dateRangeInput(
+    #             inputId = "complete_d",
+    #             label = "Selected Complete date range in YYYY-MM-DD Format",
+    #             start = "2018-09-01",
+    #             end = "2020-01-01",
+    #             separator = "to"
+    #         )
+    #     }
+    # })
+    
+    
+    
+    
+    
     output$schol_cycles_ui <- renderUI({
         if (!is.null(query_result())) {
             temp <- query_result()
@@ -1656,14 +1809,87 @@ server <- function(input, output, session) {
         paste(input$resultbin)
     })
     
+    output$date_warning <-
+        renderUI({
+            p(
+                em(
+                    "You may filter the data for application 'Sent', 'Complete', or 'Interview Invite (II)' dates to view when individuals with certain reported dates received their decisions. This significantly reduces the
+                    observersations because most users do not report these dates."
+                )
+            )
+        })
+    
+    
+    observe({
+        if (input$complete_yn == "Yes") {
+            shinyjs::showElement("choose_date_filter")
+        }
+        if (input$complete_yn == "No") {
+            shinyjs::hideElement("choose_date_filter")
+        }
+        if (input$complete_yn == "Yes") {
+            shinyjs::showElement("complete_d")
+        }
+        if (input$complete_yn == "No") {
+            shinyjs::hideElement("complete_d")
+        }
+        if (input$complete_yn == "Yes") {
+            shinyjs::showElement("date_warning")
+        }
+        if (input$complete_yn == "No") {
+            shinyjs::hideElement("date_warning")
+        }
+    })
+    
     dfPlot <- reactive({
         df.temp <- query_result()
         if (input$complete_yn == "Yes") {
-            df.temp <-
-                df.temp[df.temp$Complete >= input$complete_d[1] &
-                            df.temp$Complete <= input$complete_d[2],]
-            df.temp <- df.temp[is.na(df.temp$User) == FALSE,]
+            if(input$choose_date_filter == "complete"){
+                df.temp <-
+                    df.temp[df.temp$Complete >= input$complete_d[1] &
+                                df.temp$Complete <= input$complete_d[2],]
+                df.temp <- df.temp[is.na(df.temp$User) == FALSE,]
+            }
+            if(input$choose_date_filter == "ii"){
+                df.temp <-
+                    df.temp[df.temp$II >= input$complete_d[1] &
+                                df.temp$II <= input$complete_d[2],]
+                df.temp <- df.temp[is.na(df.temp$User) == FALSE,]
+            }
+            if(input$choose_date_filter == "sent"){
+                df.temp <-
+                    df.temp[df.temp$Sent >= input$complete_d[1] &
+                                df.temp$Sent <= input$complete_d[2],]
+                df.temp <- df.temp[is.na(df.temp$User) == FALSE,]
+            }
         }
+        # if ((input$complete_yn == "Yes" & isTruthy(input$choose_date_filter)==TRUE & input$choose_date_filter == "complete")) {
+        #     df.temp <-
+        #         df.temp[df.temp$Complete >= input$complete_d[1] &
+        #                     df.temp$Complete <= input$complete_d[2],]
+        #     df.temp <- df.temp[is.na(df.temp$User) == FALSE,]
+        # }
+        # if ((input$complete_yn == "Yes" & isTruthy(input$choose_date_filter)==TRUE & input$choose_date_filter == "complete")) {
+        #     df.temp <-
+        #         df.temp[df.temp$Complete >= input$complete_d[1] &
+        #                     df.temp$Complete <= input$complete_d[2],]
+        #     df.temp <- df.temp[is.na(df.temp$User) == FALSE,]
+        # }
+        
+        
+        
+        # if (input$complete_yn == "Yes" & input$choose_date_filter == "ii") {
+        #     df.temp <-
+        #         df.temp[df.temp$II >= input$complete_d[1] &
+        #                     df.temp$II <= input$complete_d[2],]
+        #     df.temp <- df.temp[is.na(df.temp$User) == FALSE,]
+        # }
+        # if (input$complete_yn == "Yes" & input$choose_date_filter == "sent") {
+        #     df.temp <-
+        #         df.temp[df.temp$Sent >= input$complete_d[1] &
+        #                     df.temp$Sent <= input$complete_d[2],]
+        #     df.temp <- df.temp[is.na(df.temp$User) == FALSE,]
+        # }
         if (input$plots_urm == 1 | input$plots_urm == 0) {
             df.temp <- df.temp[df.temp$URM == input$plots_urm, ]
         }
@@ -1783,8 +2009,7 @@ server <- function(input, output, session) {
                     "Rejected" = cr,
                     "Waitlisted" = cw
                 )) +
-                ggplot2::facet_grid(. ~ School) +
-                ggplot2::theme_bw()
+                ggplot2::facet_grid(. ~ School)
             return(plotly::ggplotly(p1, tooltip = 'text'))
         } else{
             p1 <- ggplot2::ggplot(df.temp2, ggplot2::aes(x = LSAT,
@@ -1816,8 +2041,7 @@ server <- function(input, output, session) {
                                             limits = c(gmin, gmax),
                                             breaks = b1) +
                 ggplot2::scale_x_discrete("LSAT") +
-                ggplot2::facet_grid(. ~ School) +
-                ggplot2::theme_bw()
+                ggplot2::facet_grid(. ~ School)
         }
     })
     
@@ -1863,7 +2087,6 @@ server <- function(input, output, session) {
                     "Rejected" = cr,
                     "Waitlisted" = cw
                 ))
-            
             
             p2 <-
                 ggplot2::ggplot(df.temp2, ggplot2::aes(x = LSAT,
@@ -1966,11 +2189,11 @@ server <- function(input, output, session) {
                     date_breaks = "1 week",
                     date_labels = "%m-%d"
                 ) +
-                ggplot2::scale_fill_manual(values = c(
+                ggplot2::scale_fill_manual(name = "Result", values = c(
                     "Accepted" = ca,
                     "Rejected" = cr,
                     "Waitlisted" = cw
-                ))
+                )) 
         } else{
             p1 <- ggplot2::ggplot(data = df1,
                                   ggplot2::aes(
@@ -2013,6 +2236,10 @@ server <- function(input, output, session) {
     
     output$predplot1 <- plotly::renderPlotly({
         df_t <- query_result()
+        df_t <- df_t[df_t$Cycle %in% input$pred_cycleid,]
+        df_t <- df_t[is.na(df_t$User) == FALSE,]
+        df_t <- df_t[is.na(df_t$LSAT) == FALSE,]
+        
         school_name <- input$predschool
         df_t$Result[df_t$Result %in% c('Accepted, Withdrawn')] <-
             "Accepted"
@@ -2291,6 +2518,9 @@ server <- function(input, output, session) {
     
     output$predplot2 <- plotly::renderPlotly({
         df_t <- query_result()
+        df_t <- df_t[df_t$Cycle %in% input$pred_cycleid,]
+        df_t <- df_t[is.na(df_t$User) == FALSE,]
+        df_t <- df_t[is.na(df_t$LSAT) == FALSE,]
         school_name <- input$predschool
         df_t$Result[df_t$Result %in% c('Accepted, Withdrawn')] <-
             "Accepted"
@@ -2573,6 +2803,9 @@ server <- function(input, output, session) {
     
     query_result2 <-  reactive({
         df5 <- query_result()
+        df5 <- df5[df5$Cycle %in% input$pred_cycleid,]
+        df5 <- df5[is.na(df5$User) == FALSE,]
+        df5 <- df5[is.na(df5$LSAT) == FALSE,]
         xy <-
             vector("list", 0) # create an empty list into which values are to be filled
         school_names <- listOutput()[, 1]
@@ -2750,27 +2983,69 @@ server <- function(input, output, session) {
         )
     
     dfMerge <- eventReactive(input$mergeButton, {
-        df.temp1 <- dfScrape()
-        
-        if (is.null(dfLoad())) {
-            downloaddata <- df.temp1
-            rm(df.temp1)
-            return(downloaddata)
-            # break()
+        if(input$merge_choice_1 == "import"){
+            if (!is.null(dfLoad())) {
+                df_merge_1 <- dfLoad()
+            }
+        }
+        if(input$merge_choice_1 == "scrape"){
+            if (!is.null(dfScrape())) {
+                df_merge_1 <- dfScrape()
+            }
+        }
+        if(input$merge_choice_1 == "merge"){
+            if (!is.null(dfMerge())) {
+                df_merge_1 <- dfMerge()
+            }
+        }
+        if(input$merge_choice_2 == "preload"){
+            df_merge_2 <- initdata
+        }
+        if(input$merge_choice_2 == "import"){
+            if (!is.null(dfLoad())) {
+                df_merge_2 <- dfLoad()
+            }
+        }
+        if(input$merge_choice_2 == "scrape"){
+            if (!is.null(dfScrape())) {
+                df_merge_2 <- dfScrape()
+            }
+        }
+        if(input$merge_choice_2 == "merge"){
+            if (!is.null(dfMerge())) {
+                df_merge_2 <- dfMerge()
+            }
         }
         
-        olddata <- dfLoad()
-        
-        olddata$check <-
+        df_merge_2$check <-
             ifelse(is.na(match(
-                paste(olddata$User, olddata$School, olddata$Cycle, sep = ""),
-                paste(df.temp1$User, df.temp1$School, df.temp1$Cycle, sep = "")
+                paste(df_merge_2$User, df_merge_2$School, df_merge_2$Cycle, sep = ""),
+                paste(df_merge_1$User, df_merge_1$School, df_merge_1$Cycle, sep = "")
             )), "No", "Yes")
         
-        olddata <- olddata[olddata$check == "No",]
-        olddata$check <- NULL
-        return(rbind(olddata, df.temp1))
+        df_merge_2 <- df_merge_2[df_merge_2$check == "No",]
+        df_merge_2$check <- NULL
+        return(rbind(df_merge_2, df_merge_1))
     })
+
+observe({
+    if(input$merge_choice_2 == "preload" | input$merge_choice_2 == "import" | input$merge_choice_2 == "merge" | input$merge_choice_2 == "scrape"){
+        shinyFeedback::showFeedbackWarning(
+            inputId = "merge_choice_2",
+            text = "To overwrite any exiting outdated entries, this must be the older of the two data sets."
+        )
+    }else {
+        shinyFeedback::hideFeedback("merge_choice_2")
+    }})
+observe({
+    if(input$merge_choice_1 == "import" || input$merge_choice_1 == "merge" || input$merge_choice_1 == "scrape"){
+        shinyFeedback::showFeedbackWarning(
+            inputId = "merge_choice_1",
+            text = "To overwrite any exiting outdated entries, this must be the newer of the two data sets."
+        )
+    }else {
+        shinyFeedback::hideFeedback("merge_choice_1")
+    }})
     
     observeEvent(input$mergeButton, {
         updateRadioButtons(session, "dataselector",

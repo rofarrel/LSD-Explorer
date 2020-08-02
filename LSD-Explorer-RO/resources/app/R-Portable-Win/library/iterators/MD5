@@ -1,11 +1,11 @@
-dbae61b092d30f166a9df5383eb09848 *DESCRIPTION
+01e542038f2e8596033cac1f1116265a *DESCRIPTION
 c0d58490c93df85ff1b4e631869b72ea *INDEX
 e041558e0aa2874c2d82da3233627edb *Meta/Rd.rds
 145bf2c78f999791e0c372db36ed6d7a *Meta/features.rds
 6a409087d4e794cca11f5b21718b5314 *Meta/hsearch.rds
 72a76917ae6fc9883b87cd4ee7362cec *Meta/links.rds
 a8a7741e8d235efe8f4a98a4c29de56a *Meta/nsInfo.rds
-2b0b32e0c256addbd80ac0a4bbd503cc *Meta/package.rds
+ea6666864027afd3dd90095988918c3a *Meta/package.rds
 7b981315d2826120a7aaab0d0713b3bb *Meta/vignette.rds
 9fcb4ed44313bc97aa6a971ee7dc472b *NAMESPACE
 45c2988f0ec76eb01cc8eb7646447164 *NEWS
@@ -32,9 +32,9 @@ b0b37d1ea5e7d4784910dbb058c550d3 *examples/ivector.R
 2f454535709b77182316e9ee93d7ddb9 *examples/ivector2.R
 aa949dae53f9f86592979f2479278eaf *help/AnIndex
 d091f9878f14a2edd1f6c04297b81159 *help/aliases.rds
-d819da306c2aa5aa2a44127120c67373 *help/iterators.rdb
-f7d9a6c6854718f71793b812c758471c *help/iterators.rdx
-59093898eabc9f102110bf39dccae514 *help/paths.rds
+d3cd8466dc9f17bc4b17b5e7c7c2ea8e *help/iterators.rdb
+a2aab84147c325f376141335064b8261 *help/iterators.rdx
+0a7706adacd050270d40a3d25606852f *help/paths.rds
 cd94e29340d1529bbbd371bf0c9a5086 *html/00Index.html
 b6763e6916890c631fdc3f2643803b1a *html/R.css
 40b567d4d84f82a2d34a524e6e609646 *unitTests/basicTest.R

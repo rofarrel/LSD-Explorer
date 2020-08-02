@@ -1,4 +1,4 @@
-cf801587c6648e77daa41dda0d470c2e *DESCRIPTION
+fb04b45ab72391d21dce32ac68a045ce *DESCRIPTION
 65663e369a0b78b6a56588da039b35b0 *INDEX
 4f1b527f40d48d10ffc0cfa5bf33d3b2 *Meta/Rd.rds
 1413bd62a743b0d681e17ea983287334 *Meta/demo.rds
@@ -6,7 +6,7 @@ cf801587c6648e77daa41dda0d470c2e *DESCRIPTION
 ea90d248c2bd32d77c3e1f5b4a913b07 *Meta/hsearch.rds
 251ecd3ac0e03dd4c946918e643204ac *Meta/links.rds
 bfd1309ce0e7f6fb07f1216cf0354702 *Meta/nsInfo.rds
-cbf6fd9af7760dbaac21de711949dc24 *Meta/package.rds
+80cb60ffbf061a9c0c1895a2bff0cba8 *Meta/package.rds
 355f0546524dd7cde7818163c1ba0343 *Meta/vignette.rds
 a2ce4bf187f979797e5bb32fdf20620e *NAMESPACE
 66914af77a768cf142e9af9a736c6b7b *NEWS.md
@@ -47,8 +47,8 @@ e4a12f47d6448aca6450662d1e79ed6f *examples/sinc2.R
 c53681484b1c0cc3465761d78b6e6a9a *examples/tuneRF.R
 657b936a764bf311e114895ccee17c6a *help/AnIndex
 5ddce4f38e80e1ec4a92c7337eaf9dfb *help/aliases.rds
-6d34aa7b2eeabb9399d7e5b621286f5a *help/foreach.rdb
-f2b8b857094a2da68ad08ac6088de169 *help/foreach.rdx
-bdf4676a7f71872170090210a9a4c57e *help/paths.rds
+33cac918a7ed6bba3f9e3ebda2d72fbe *help/foreach.rdb
+e681b479f6403e8f860a8c7ab972947e *help/foreach.rdx
+06cfdd6d3e1a8f3acbddeb3c2445fd4f *help/paths.rds
 b144ae76cee94c2b333c53d415b5b250 *html/00Index.html
 b6763e6916890c631fdc3f2643803b1a *html/R.css

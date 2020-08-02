@@ -1,4 +1,4 @@
-66be96395c3fa67ab4fbd884dd2163c7 *DESCRIPTION
+14250063155f247bc09fe0e571139fda *DESCRIPTION
 c696f4f62e46d39fd0187a843515c287 *INDEX
 78065f5a6598cb68db3de6e88fb601d6 *LICENSE
 5f621e785518c7e805214e75e1529e00 *Meta/Rd.rds
@@ -6,7 +6,7 @@ c696f4f62e46d39fd0187a843515c287 *INDEX
 c6a0ad9832a634d1558e620d2cd1bd1d *Meta/hsearch.rds
 6db6d22154d981980be92e12af3b2e8d *Meta/links.rds
 c873f9dc9755d460b85e5371ec473cea *Meta/nsInfo.rds
-f825b8235c0d063b3e5d5bae4de1733b *Meta/package.rds
+f0bdcc524c795f6806a2ac34a611e670 *Meta/package.rds
 5beb1c52143392ba54f3481f91409c44 *NAMESPACE
 efce85d9807418363cc1433fc1c2c992 *NEWS.md
 ebf0fc819595d631b8bf280c4b049940 *R/webdriver
@@ -16,9 +16,9 @@ f3671234584ec96143f8763158e2ab23 *R/webdriver.rdx
 ecee326737d94265302cc5b7bb2ca0c6 *README.markdown
 107730c4f7d6aec02a11e7d3f9273aec *help/AnIndex
 0bb18f6b0f8611ff9311c127eee188ee *help/aliases.rds
-6316a8315f74fcb08c5cb22d4343184f *help/paths.rds
-c5286861e44c423974388cb8db905898 *help/webdriver.rdb
-59053615a1135ad5d174f93bb08c0c27 *help/webdriver.rdx
+e2de9fb959b18382148f584e80baa544 *help/paths.rds
+235e8c8675632bc3d0f97a2b52a7e376 *help/webdriver.rdb
+a96580be539cad77bd3d03d5a20a8bd5 *help/webdriver.rdx
 7ac5e1b00959f22ea94d6a0ff7c805e9 *html/00Index.html
 b6763e6916890c631fdc3f2643803b1a *html/R.css
 7226f7e0e5300ab866e810e3a20f2cc8 *js/webdriver-wait-for.js

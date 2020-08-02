@@ -27,6 +27,22 @@ document.addEventListener('DOMContentLoaded', function(e) {
   }
 });
 </script>
+<script>// Hide empty <a> tag within highlighted CodeBlock for screen reader accessibility (see https://github.com/jgm/pandoc/issues/6352#issuecomment-626106786) -->
+// v0.0.1
+// Written by JooYoung Seo (jooyoung@psu.edu) and Atsushi Yasumoto on June 1st, 2020.
+
+document.addEventListener('DOMContentLoaded', function() {
+  const codeList = document.getElementsByClassName("sourceCode");
+  for (var i = 0; i < codeList.length; i++) {
+    var linkList = codeList[i].getElementsByTagName('a');
+    for (var j = 0; j < linkList.length; j++) {
+      if (linkList[j].innerHTML === "") {
+        linkList[j].setAttribute('aria-hidden', 'true');
+      }
+    }
+  }
+});
+</script>
 
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -338,7 +354,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <p>We’ve pointed out that tidyr’s tidy evaluation interface is optimized for interactive exploration. The flip side is that this adds some challenges to indirect use, i.e. when you’re working inside a <code>for</code> loop or a function. This vignette shows you how to overcome those challenges. We’ll first go over the basics of tidy selection and data masking, talk about how to use them indirectly, and then show you a number of recipes to solve common problems.</p>
 <p>Before we go on, we reveal the version of tidyr we’re using and make a small dataset to use in examples.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">packageVersion</span>(<span class="st">&quot;tidyr&quot;</span>)</span>
-<span id="cb2-2"><a href="#cb2-2"></a><span class="co">#&gt; [1] &#39;1.1.0&#39;</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="co">#&gt; [1] &#39;1.1.1&#39;</span></span>
 <span id="cb2-3"><a href="#cb2-3"></a></span>
 <span id="cb2-4"><a href="#cb2-4"></a>mini_iris &lt;-<span class="st"> </span><span class="kw">as_tibble</span>(iris)[<span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">51</span>, <span class="dv">52</span>, <span class="dv">101</span>, <span class="dv">102</span>), ]</span>
 <span id="cb2-5"><a href="#cb2-5"></a>mini_iris</span>
