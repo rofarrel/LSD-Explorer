@@ -11,7 +11,7 @@ Version 2 Has Arrived!
       * Added a Feedback tab that links to an issue-reporting thread
 
 @@  2.0 Issues and Bugs:  @@
-      * The app still often loads to a blank white page when first opening the app. Click "View" then "Reload" to
+      * The app still often loads to a blank white page when starting. Click "View" then "Reload" to
         load the app.
       * The Electron framework sometimes does not close all windows processes upon exiting the program. Check your
         task manager for "Electron" or "R-Portable Front End" processes lingering after closing the application.
