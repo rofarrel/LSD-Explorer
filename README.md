@@ -21,7 +21,7 @@ Here is a video showing how the app works: https://www.youtube.com/watch?v=GRMn8
 ![LSD Explorer](https://i.imgur.com/udwM9nJ.png)
 
 
-### 2. If you are from a law school, please visit https://rofarrel.shinyapps.io/LSD-Explorer-v-1-6/ for a web version of the app. Please read below:
+### 2. If you are from a law school, please visit https://rofarrel.shinyapps.io/LSD-Explorer-v-2/ for a web version of the app. Please read below:
 ```diff
 ! Enter my LSAC ID as the username and password for access.
 ! This secure login is only implemented for the web version to prevent public visitors from using server resources.
