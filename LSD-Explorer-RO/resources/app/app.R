@@ -764,7 +764,7 @@ server <- function(input, output, session) {
                 "&school=George+Washington+University",
                 "&school=Georgetown+University",
                 "&school=Harvard+University",
-                "&school=Indiana+University+%E2%80%94+Bloomington"
+                "&school=Indiana+University+-+Bloomington"
                 ,
                 "&school=New+York+University",
                 "&school=Northwestern+University",
