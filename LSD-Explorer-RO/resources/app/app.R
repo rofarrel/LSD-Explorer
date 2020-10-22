@@ -764,7 +764,7 @@ server <- function(input, output, session) {
                 "&school=George+Washington+University",
                 "&school=Georgetown+University",
                 "&school=Harvard+University",
-                "&school=Indiana+University+Bloomington"
+                "&school=Indiana+University+—+Bloomington"
                 ,
                 "&school=New+York+University",
                 "&school=Northwestern+University",
@@ -775,17 +775,17 @@ server <- function(input, output, session) {
                 "&school=Temple+University",
                 "&school=University+of+Alabama",
                 "&school=University+of+Arizona",
-                "&school=University+of+California+Berkeley"
+                "&school=University+of+California—Berkeley"
                 ,
-                "&school=University+of+California+Davis",
-                "&school=University+of+California+Irvine",
-                "&school=University+of+California+Los+Angeles",
+                "&school=University+of+California—Davis",
+                "&school=University+of+California—Irvine",
+                "&school=University+of+California—Los+Angeles",
                 "&school=University+of+Chicago"
                 ,
-                "&school=University+of+Colorado+Boulder",
+                "&school=University+of+Colorado—Boulder",
                 "&school=University+of+Florida",
                 "&school=University+of+Georgia",
-                "&school=University+of+Illinois+Urbana-Champaign"
+                "&school=University+of+Illinois—Urbana-Champaign"
                 ,
                 "&school=University+of+Iowa",
                 "&school=University+of+Michigan+Ann+Arbor",
