@@ -3,10 +3,9 @@
 ```diff
 Version 2 Has Arrived!
 
-@@  Hotfix          @@
+@@  Update   @@
       * LawSchoolData.org has changed several URL links to school pages. Many pages that include an em dash
-      such as "University of California—Irvine" subsequently broke. All of the University of Califnornia schools
-      have been fixed but there are several others that still need to be fixed
+      such as "University of California—Irvine" subsequently broke. This issue has not yet been fixed.
 
 @@  2.0 Changelog:  @@
       * Now comes with preloaded data (T14 school for cycles 17-18, 18-19, 19-20)
