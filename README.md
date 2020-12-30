@@ -1,11 +1,11 @@
 # LSD-Explorer-v2.0 (Windows Only)
-### 1. Last Update: October 22, 2020
+### 1. Last Update: December 30, 2020
 ```diff
 Version 2 Has Arrived!
 
 @@  Hotfix   @@
-      * LawSchoolData.org has changed several URL links to school pages. Many pages that include an em dash
-      such as "University of California—Irvine" subsequently broke. This issue has now been fixed.
+      * Updated app.R file to exclude the newly added UR2 column from scraped LSD.org data. The added column had caused interview invite 
+      dates to be assigned to decision dates
 
 @@  2.0 Changelog:  @@
       * Now comes with preloaded data (T14 school for cycles 17-18, 18-19, 19-20)
