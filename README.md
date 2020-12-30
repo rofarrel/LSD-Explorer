@@ -5,7 +5,7 @@ Version 2 Has Arrived!
 
 @@  Hotfix   @@
       * Updated app.R file to exclude the newly added UR2 column from scraped LSD.org data. The added column had caused 
-      interview invite dates to be assigned to decision dates
+        interview invite dates to be assigned to decision dates
 
 @@  2.0 Changelog:  @@
       * Now comes with preloaded data (T14 school for cycles 17-18, 18-19, 19-20)
