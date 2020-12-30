@@ -1109,8 +1109,10 @@ server <- function(input, output, session) {
                                      df.c[df3 + 9],
                                      df.c[df3 + 10],
                                      df.c[df3 + 11],
-                                     df.c[df3 + 12]
+                                     df.c[df3 + 12],
+                                     df.c[df3 + 13]
                                  )
+                             riley2 <- riley2[,-12]
                              riley2 <- data.frame(riley2)
                              riley2$school <-
                                  paste(schooltemp$X2[i])
